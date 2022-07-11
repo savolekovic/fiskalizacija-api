@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from 'src/auth/auth.module';
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
 import { ItemsController } from './controllers/items.controller';
+import { IsCreatorGuard } from './guards/is-creator.guard';
 import { ItemEntity } from './models/entities/item.entity';
 import { ManufacturerEntity } from './models/entities/manufacturer.entity';
 import { TaxRateEntity } from './models/entities/tax-rate.entity';
@@ -24,8 +26,9 @@ import { ItemsService } from './services/items.service';
       TaxRateEntity,
       WarehouseEntity,
     ]),
+    AuthModule
   ],
   controllers: [ItemsController],
-  providers: [ItemsService],
+  providers: [ItemsService, IsCreatorGuard],
 })
 export class ItemsModule {}

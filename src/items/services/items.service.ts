@@ -116,7 +116,7 @@ export class ItemsService {
     );
   }
 
-  findOne(id: number): Observable<ItemEntity> {
+  findItemById(id: number): Observable<ItemEntity> {
     return from(
       this.itemRepository.findOne({
         where: {

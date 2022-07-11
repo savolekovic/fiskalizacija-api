@@ -9,21 +9,21 @@ import { UserEntity } from '../models/entities/user.entity';
 import { Customer } from '../models/dto/customer.dto';
 
 import * as bcrypt from 'bcrypt';
-import { CommonService } from './common.service';
+import { UserService } from './user.service';
 
 @Injectable()
 export class CustomerService {
   constructor(
     @InjectRepository(CustomerEntity)
     private readonly customerRepository: Repository<CustomerEntity>,
-    private commonService: CommonService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
   register(customer: Customer): Observable<CustomerEntity> {
     const { username, password, idNumber } = customer;
 
-    return this.commonService.doesUsernameExist(username).pipe(
+    return this.userService.doesUsernameExist(username).pipe(
       tap((doesUsernameExist: boolean) => {
         if (doesUsernameExist)
           throw new HttpException(
@@ -42,7 +42,7 @@ export class CustomerService {
           );
       }),
       switchMap(() => {
-        return this.commonService.hashPassword(password);
+        return this.userService.hashPassword(password);
       }),
       switchMap((hashedPassword: string) => {
         const user = new UserEntity();

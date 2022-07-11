@@ -7,13 +7,13 @@ import { Company } from '../models/dto/company.dto';
 import { User } from '../models/dto/user.dto';
 import { CompanyEntity } from '../models/entities/company.entity';
 import { UserEntity } from '../models/entities/user.entity';
-import { CommonService } from './common.service';
 
 import * as bcrypt from 'bcrypt';
 import { StreetEntity } from '../models/entities/street.entity';
 import { CompanyTypeEntity } from '../models/entities/company-type.entity';
 import { CountryEntity } from '../models/entities/country.entity';
 import { CityEntity } from '../models/entities/city.entity';
+import { UserService } from './user.service';
 
 @Injectable()
 export class CompanyService {
@@ -29,7 +29,7 @@ export class CompanyService {
     @InjectRepository(StreetEntity)
     private readonly streetRepository: Repository<StreetEntity>,
     private jwtService: JwtService,
-    private commonService: CommonService,
+    private userService: UserService,
   ) {}
 
   register(company: Company): Observable<CompanyEntity> {
@@ -43,7 +43,7 @@ export class CompanyService {
       streetName,
     } = company;
 
-    return this.commonService.doesUsernameExist(username).pipe(
+    return this.userService.doesUsernameExist(username).pipe(
       tap((doesUsernameExist: boolean) => {
         if (doesUsernameExist)
           throw new HttpException(
@@ -62,7 +62,7 @@ export class CompanyService {
           );
       }),
       switchMap(() => {
-        return this.commonService.hashPassword(password);
+        return this.userService.hashPassword(password);
       }),
       switchMap((hashedPassword: string) => {
         const user = new UserEntity();

@@ -9,21 +9,21 @@ import { AdminEntity } from '../models/entities/admin.entity';
 import { UserEntity } from '../models/entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
-import { CommonService } from './common.service';
+import { UserService } from './user.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectRepository(AdminEntity)
     private readonly adminRepository: Repository<AdminEntity>,
-    private commonService: CommonService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
   registerAdmin(admin: Admin): Observable<AdminEntity> {
     const { username, password } = admin;
 
-    return this.commonService.doesUsernameExist(username).pipe(
+    return this.userService.doesUsernameExist(username).pipe(
       tap((doesUsernameExist: boolean) => {
         if (doesUsernameExist)
           throw new HttpException(
@@ -32,7 +32,7 @@ export class AdminService {
           );
       }),
       switchMap(() => {
-        return this.commonService.hashPassword(password);
+        return this.userService.hashPassword(password);
       }),
       switchMap((hashedPassword: string) => {
         const user = new UserEntity();

@@ -16,6 +16,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { IsCreatorGuard } from '../guards/is-creator.guard';
 import { CreateItem } from '../models/dto/create-item.dto';
 import { UpdateItem } from '../models/dto/update-item.dto';
 import { ItemEntity } from '../models/entities/item.entity';
@@ -44,10 +45,10 @@ export class ItemsController {
     return this.itemsService.findItems(take, skip);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, IsCreatorGuard)
   @Get(':id')
   findOne(@Param('id') id: number): Observable<ItemEntity> {
-    return this.itemsService.findOne(id);
+    return this.itemsService.findItemById(id);
   }
 
   // @Put(':id')

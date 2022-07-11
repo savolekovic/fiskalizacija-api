@@ -15,7 +15,7 @@ import { UserEntity } from './models/entities/user.entity';
 import { AdminService } from './services/auth-admin.service';
 import { CompanyService } from './services/auth-company.service';
 import { CustomerService } from './services/auth-customer.service';
-import { CommonService } from './services/common.service';
+import { UserService } from './services/user.service';
 
 @Module({
   imports: [
@@ -37,7 +37,7 @@ import { CommonService } from './services/common.service';
     ]),
   ],
   providers: [
-    CommonService,
+    UserService,
     CompanyService,
     AdminService,
     CustomerService,
@@ -45,5 +45,6 @@ import { CommonService } from './services/common.service';
     JwtStrategy,
   ],
   controllers: [AuthController],
+  exports: [UserService]
 })
 export class AuthModule {}
