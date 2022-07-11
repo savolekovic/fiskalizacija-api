@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { from, Observable, skip, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CreateItem } from '../models/dto/create-item.dto';
 import { UpdateItem } from '../models/dto/update-item.dto';
 import { ItemEntity } from '../models/entities/item.entity';
@@ -133,7 +133,12 @@ export class ItemsService {
   //   return from(this.itemRepository.update(id, item));
   // }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} item`;
-  // }
+  remove(id: number, jwt: string): Observable<DeleteResult> {
+    //Extract token from authorization string
+    jwt = jwt.replace('Bearer ', '');
+    //Decode jwt and extract payload
+    const json = this.jwtService.decode(jwt, { json: true }) as { user: User };
+
+    return from(this.itemRepository.delete({id: id, companyId: json.user.id}));
+  }
 }

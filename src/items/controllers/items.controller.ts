@@ -16,6 +16,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { DeleteResult } from 'typeorm';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
 import { CreateItem } from '../models/dto/create-item.dto';
 import { UpdateItem } from '../models/dto/update-item.dto';
@@ -56,8 +57,12 @@ export class ItemsController {
   //   return this.itemsService.update(+id, item);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.itemsService.remove(+id);
-  // }
+  @UseGuards(JwtGuard, IsCreatorGuard)
+  @Delete(':id')
+  remove(
+    @Param('id') id: number,
+    @Headers('Authorization') auth: string,
+  ): Observable<DeleteResult> {
+    return this.itemsService.remove(id, auth);
+  }
 }
