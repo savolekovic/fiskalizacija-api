@@ -8,55 +8,52 @@ import {
 } from 'class-validator';
 
 export class UpdateItem {
-
-  @IsNumber()
-  @IsNotEmpty()
-  companyId: number;
-
-
-  //Required
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   name: string;
+
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   measureUnit: string;
+
   @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
   buyingPrice: number;
+
   @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
   sellingPrice: number;
+
   @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
   quantityInStock: number;
 
-  //Optional
   @IsOptional()
   @IsString()
-  countryOfOrigin?: string;
+  countryOfOrigin: string;
+
   @IsOptional()
   @IsString()
-  foreignName?: string;
+  foreignName: string;
+
   @IsOptional()
   @Length(12, 12)
   @IsNumber()
-  barcode?: number;
+  barcode: number;
+
   @IsOptional()
   @IsNumber()
-  customsRate?: number;
+  customsRate: number;
+
   @IsOptional()
   @IsBoolean()
-  applyTaxes?: boolean;
+  applyTaxes: boolean;
+
   @IsOptional()
   @IsString()
-  description?: string;
+  description: string;
+
   @IsOptional()
   @IsString()
-  declaration?: string;
+  declaration: string;
 }

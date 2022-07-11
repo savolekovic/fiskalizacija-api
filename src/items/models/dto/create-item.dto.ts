@@ -52,24 +52,31 @@ export class CreateItem {
   //Optional
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   countryOfOrigin?: string;
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   foreignName?: string;
   @IsOptional()
   @Length(12, 12)
   @IsNumber()
+  @IsNotEmpty()
   barcode?: number;
   @IsOptional()
   @IsNumber()
+  @IsNotEmpty()
   customsRate?: number;
   @IsOptional()
   @IsBoolean()
+  @IsNotEmpty()
   applyTaxes?: boolean;
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   description?: string;
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   declaration?: string;
 }

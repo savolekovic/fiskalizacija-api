@@ -1,8 +1,10 @@
+import { ItemEntity } from 'src/items/models/entities/item.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryColumn,
 } from 'typeorm';
@@ -20,6 +22,9 @@ export class CompanyEntity {
   @OneToOne(() => UserEntity, { cascade: true })
   @JoinColumn({ name: 'id', referencedColumnName: 'id' })
   user: UserEntity;
+
+  @OneToMany(() => ItemEntity, (itemEntity) => itemEntity.company)
+    items: ItemEntity[];
 
   @ManyToOne(
     () => CompanyTypeEntity,

@@ -21,7 +21,7 @@ import { CommonService } from './services/common.service';
   imports: [
     JwtModule.registerAsync({
       useFactory: () => ({
-        secret: 'jwtsecret',
+        secret: process.env.JWT_SECRET,
         signOptions: { expiresIn: '3600s' },
       }),
     }),

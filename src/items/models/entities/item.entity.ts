@@ -1,5 +1,4 @@
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
-import { UserEntity } from 'src/auth/models/entities/user.entity';
 import {
   Column,
   Entity,
@@ -21,7 +20,9 @@ export class ItemEntity {
   @PrimaryColumn()
   companyId: number;
 
-  @OneToOne(() => CompanyEntity)
+  @ManyToOne(() => CompanyEntity, 
+  (companyEntity) => companyEntity.items,
+  { eager: true })
   @JoinColumn({ name: 'companyId', referencedColumnName: 'id' })
   company: CompanyEntity;
 
@@ -43,25 +44,25 @@ export class ItemEntity {
   @Column()
   measureUnit: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   countryOfOrigin: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   foreignName: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   barcode: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true})
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   customsRate: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   applyTaxes: boolean;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   description: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   declaration: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })

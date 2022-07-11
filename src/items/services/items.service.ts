@@ -95,13 +95,14 @@ export class ItemsService {
 
   findItems(take: number, skip: number): Observable<ItemEntity[]> {
     return from(
-      this.itemRepository
-        .createQueryBuilder('item')
-        .innerJoinAndSelect('item.company', 'company')
-        .orderBy('item.id', 'DESC')
-        .take(take)
-        .skip(skip)
-        .getMany(),
+      //We can use like this if we put {eager: true} on the relation
+      this.itemRepository.find({take, skip})
+        // .createQueryBuilder('item')
+        // .innerJoinAndSelect('item.company', 'company')
+        // .orderBy('item.id', 'DESC')
+        // .take(take)
+        // .skip(skip)
+        // .getMany(),
     );
   }
 
