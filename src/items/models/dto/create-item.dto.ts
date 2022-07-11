@@ -13,9 +13,6 @@ import { WarehouseEntity } from '../entities/warehouse.entity';
 
 export class CreateItem {
   company: CompanyEntity;
-  @IsNumber()
-  @IsNotEmpty()
-  companyId: number;
 
   manufacturer: ManufacturerEntity;
   @IsString()

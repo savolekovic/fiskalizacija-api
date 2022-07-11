@@ -59,7 +59,7 @@ export class CustomerService {
     return this.validate(username, password).pipe(
       switchMap((customer: CustomerEntity) => {
         if (customer) {
-          const payload = { thisUser: customer.user };
+          const payload =  {user: customer.user};
           //create JWT - credentials
           //jwtService.signAsync returns Promise<string>
           return from(this.jwtService.signAsync(payload));

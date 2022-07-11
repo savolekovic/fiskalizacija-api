@@ -10,7 +10,10 @@ import {
   Put,
   Request,
   UseGuards,
+  Header,
+  Headers,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CreateItem } from '../models/dto/create-item.dto';
@@ -24,8 +27,11 @@ export class ItemsController {
 
   @UseGuards(JwtGuard)
   @Post()
-  create(@Body() item: CreateItem): Observable<ItemEntity> {
-    return from(this.itemsService.create(item));
+  create(
+    @Body() item: CreateItem,
+    @Headers('Authorization') auth: string,
+  ): Observable<ItemEntity> {
+    return from(this.itemsService.create(item, auth));
   }
 
   @UseGuards(JwtGuard)
@@ -38,6 +44,7 @@ export class ItemsController {
     return this.itemsService.findItems(take, skip);
   }
 
+  @UseGuards(JwtGuard)
   @Get(':id')
   findOne(@Param('id') id: number): Observable<ItemEntity> {
     return this.itemsService.findOne(id);

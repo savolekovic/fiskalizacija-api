@@ -50,7 +50,7 @@ export class ItemEntity {
   @Column({ nullable: true })
   foreignName: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'bigint', nullable: true })
   barcode: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })

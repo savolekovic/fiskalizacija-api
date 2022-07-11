@@ -19,12 +19,6 @@ export class AuthController {
     private customerService: CustomerService,
   ) {}
 
-  @UseGuards(JwtGuard)
-  @Get()
-  getHello() {
-    return { hello: 'Hello World' };
-  }
-
   //COMPANY
   @Post('register/company')
   registerCompany(@Body() company: Company): Observable<CompanyEntity> {

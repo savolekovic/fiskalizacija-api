@@ -118,7 +118,7 @@ export class CompanyService {
     return this.validate(username, password).pipe(
       switchMap((company: CompanyEntity) => {
         if (company) {
-          const payload = {thisUser: company.user};
+          const payload = {user: company.user};
           //create JWT - credentials
           //jwtService.signAsync returns Promise<string>
           return from(this.jwtService.signAsync( payload ));

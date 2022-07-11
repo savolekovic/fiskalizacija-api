@@ -49,7 +49,7 @@ export class AdminService {
     return this.validate(username, password).pipe(
       switchMap((admin: AdminEntity) => {
         if (admin) {
-          const payload = {thisUser: admin.user};
+          const payload = {user: admin.user};
           //create JWT - credentials
           //jwtService.signAsync returns Promise<string>
           return from(this.jwtService.signAsync( payload ));
