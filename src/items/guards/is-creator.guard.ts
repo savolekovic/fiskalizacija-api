@@ -13,14 +13,14 @@ export class IsCreatorGuard implements CanActivate {
   constructor(
     private userService: UserService,
     private itemsService: ItemsService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    const { params }: {  params: { id: number } } = request;
+    const { params }: { params: { id: number } } = request;
 
     const jwt = request.headers.authorization.replace('Bearer ', '');
     const json = this.jwtService.decode(jwt, { json: true }) as { user: User };
@@ -33,10 +33,10 @@ export class IsCreatorGuard implements CanActivate {
     // Determine if logged-in user is the same as the user that created the feed post
     return this.userService.findUserById(userId).pipe(
       switchMap((user: User) =>
-        this.itemsService.findItemById(itemId).pipe(
+        this.itemsService.findItemById(itemId, user.id).pipe(
           map((item: ItemEntity) => {
-            let isCreator = user.id === item.companyId;
-            return isCreator;
+            if (!item) return false;
+            return true;
           }),
         ),
       ),

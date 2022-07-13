@@ -41,11 +41,6 @@ export class ItemsController {
     return this.itemsService.findItems(take, skip);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number): Observable<ItemEntity> {
-    return this.itemsService.findOne(id);
-  }
-
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Put(':id')
   update(
@@ -56,7 +51,7 @@ export class ItemsController {
     return this.itemsService.update(id, item, auth);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, IsCreatorGuard)
   @Delete(':id')
   remove(
     @Param('id') id: number,

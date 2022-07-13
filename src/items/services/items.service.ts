@@ -118,21 +118,11 @@ export class ItemsService {
     );
   }
 
-  findItemById(id: number): Observable<ItemEntity> {
+  findItemById(id: number, companyId: number): Observable<ItemEntity> {
     return from(
       this.itemRepository.findOneBy({
         id,
-      }),
-    );
-  }
-
-  findOne(id: number) {
-    return this.findItemById(id).pipe(
-      switchMap((item: ItemEntity) => {
-        if (!item) {
-          throw new HttpException('Item not found.', HttpStatus.NOT_FOUND);
-        }
-        return from(this.itemRepository.save(item));
+        companyId,
       }),
     );
   }
@@ -140,7 +130,13 @@ export class ItemsService {
   update(id: number, item: CreateItem, jwt: string) {
     const itemPK = { id, companyId: this.getJwtUserId(jwt) };
 
-    return this.findManufacturer(item.manufacturer.title).pipe(
+    return this.findItemById(id, itemPK.companyId).pipe(
+      switchMap((item: ItemEntity) => {
+        if (!item) {
+          throw new HttpException('Item not found.', HttpStatus.NOT_FOUND);
+        }
+        return this.findManufacturer(item.manufacturer.title);
+      }),
       switchMap((manufacturer: ManufacturerEntity) => {
         if (!manufacturer) {
           throw new HttpException(
