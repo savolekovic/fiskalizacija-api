@@ -20,22 +20,29 @@ export class ItemEntity {
   @PrimaryColumn()
   companyId: number;
 
-  @ManyToOne(() => CompanyEntity, 
-  (companyEntity) => companyEntity.items,
-  { eager: true })
+  @ManyToOne(() => CompanyEntity, (companyEntity) => companyEntity.items, {
+    eager: true,
+  })
   @JoinColumn({ name: 'companyId', referencedColumnName: 'id' })
   company: CompanyEntity;
 
   @ManyToOne(
     () => ManufacturerEntity,
     (manufacturerEntity) => manufacturerEntity.items,
+    { eager: true },
   )
   manufacturer: ManufacturerEntity;
 
-  @ManyToOne(() => TaxRateEntity, (taxRateEntity) => taxRateEntity.items)
+  @ManyToOne(() => TaxRateEntity, (taxRateEntity) => taxRateEntity.items, {
+    eager: true,
+  })
   taxRate: TaxRateEntity;
 
-  @ManyToOne(() => WarehouseEntity, (warehouseEntity) => warehouseEntity.items)
+  @ManyToOne(
+    () => WarehouseEntity,
+    (warehouseEntity) => warehouseEntity.items,
+    { eager: true },
+  )
   warehouse: WarehouseEntity;
 
   @Column()

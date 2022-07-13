@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsNumber,
   IsOptional,
   IsString,
@@ -14,20 +15,12 @@ import { WarehouseEntity } from '../entities/warehouse.entity';
 export class CreateItem {
   company: CompanyEntity;
 
+  @IsNotEmptyObject()
   manufacturer: ManufacturerEntity;
-  @IsString()
-  @IsNotEmpty()
-  manufacturerTitle: string;
-
+  @IsNotEmptyObject()
   taxRate: TaxRateEntity;
-  @IsString()
-  @IsNotEmpty()
-  taxRateName: string;
-
+  @IsNotEmptyObject()
   warehouse: WarehouseEntity;
-  @IsString()
-  @IsNotEmpty()
-  warehouseName: string;
 
   //Required
   @IsString()

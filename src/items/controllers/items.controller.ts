@@ -3,23 +3,18 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
   Put,
-  Request,
   UseGuards,
-  Header,
   Headers,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { DeleteResult } from 'typeorm';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
 import { CreateItem } from '../models/dto/create-item.dto';
-import { UpdateItem } from '../models/dto/update-item.dto';
 import { ItemEntity } from '../models/entities/item.entity';
 import { ItemsService } from '../services/items.service';
 
@@ -46,18 +41,22 @@ export class ItemsController {
     return this.itemsService.findItems(take, skip);
   }
 
-  @UseGuards(JwtGuard, IsCreatorGuard)
   @Get(':id')
   findOne(@Param('id') id: number): Observable<ItemEntity> {
-    return this.itemsService.findItemById(id);
+    return this.itemsService.findOne(id);
   }
 
-  // @Put(':id')
-  // update(@Param('id') id: string, @Body() item: UpdateItem) {
-  //   return this.itemsService.update(+id, item);
-  // }
-
   @UseGuards(JwtGuard, IsCreatorGuard)
+  @Put(':id')
+  update(
+    @Param('id') id: number,
+    @Body() item: CreateItem,
+    @Headers('Authorization') auth: string,
+  ) {
+    return this.itemsService.update(id, item, auth);
+  }
+
+  @UseGuards(JwtGuard)
   @Delete(':id')
   remove(
     @Param('id') id: number,

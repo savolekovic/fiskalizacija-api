@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
@@ -63,18 +68,15 @@ export class ItemsService {
   }
 
   create(item: CreateItem, jwt: string): Observable<ItemEntity> {
-    //Extract token from authorization string
-    jwt = jwt.replace('Bearer ', '');
-    //Decode jwt and extract payload
-    const json = this.jwtService.decode(jwt, { json: true }) as { user: User };
+    const companyId = this.getJwtUserId(jwt);
 
-    return this.findCompany(json.user.id).pipe(
+    return this.findCompany(companyId).pipe(
       switchMap((company: CompanyEntity) => {
         if (!company) {
           throw new HttpException('Company not found.', HttpStatus.NOT_FOUND);
         }
         item.company = company;
-        return this.findManufacturer(item.manufacturerTitle);
+        return this.findManufacturer(item.manufacturer.title);
       }),
       switchMap((manufacturer: ManufacturerEntity) => {
         if (!manufacturer) {
@@ -84,14 +86,14 @@ export class ItemsService {
           );
         }
         item.manufacturer = manufacturer;
-        return this.findTaxRate(item.taxRateName);
+        return this.findTaxRate(item.taxRate.name);
       }),
       switchMap((taxRate: TaxRateEntity) => {
         if (!taxRate) {
           throw new HttpException('Tax rate not found.', HttpStatus.NOT_FOUND);
         }
         item.taxRate = taxRate;
-        return this.findWarehouse(item.warehouseName);
+        return this.findWarehouse(item.warehouse.name);
       }),
       switchMap((warehouse: WarehouseEntity) => {
         if (!warehouse) {
@@ -118,27 +120,64 @@ export class ItemsService {
 
   findItemById(id: number): Observable<ItemEntity> {
     return from(
-      this.itemRepository.findOne({
-        where: {
-          id,
-        },
-        relations: ['company', 'manufacturer', 'taxRate', 'warehouse'],
+      this.itemRepository.findOneBy({
+        id,
       }),
     );
   }
 
-  // update(id: number, item: UpdateItem) {
-  //   //We will get companyId from the JWT tokem
-  //   const itemPK = { id: id, companyId: item.companyId};
-  //   return from(this.itemRepository.update(id, item));
-  // }
+  findOne(id: number) {
+    return this.findItemById(id).pipe(
+      switchMap((item: ItemEntity) => {
+        if (!item) {
+          throw new HttpException('Item not found.', HttpStatus.NOT_FOUND);
+        }
+        return from(this.itemRepository.save(item));
+      }),
+    );
+  }
+
+  update(id: number, item: CreateItem, jwt: string) {
+    const itemPK = { id, companyId: this.getJwtUserId(jwt) };
+
+    return this.findManufacturer(item.manufacturer.title).pipe(
+      switchMap((manufacturer: ManufacturerEntity) => {
+        if (!manufacturer) {
+          throw new HttpException(
+            'Manufacturer not found.',
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        item.manufacturer = manufacturer;
+        return this.findTaxRate(item.taxRate.name);
+      }),
+      switchMap((taxRate: TaxRateEntity) => {
+        if (!taxRate) {
+          throw new HttpException('Tax rate not found.', HttpStatus.NOT_FOUND);
+        }
+        item.taxRate = taxRate;
+        return this.findWarehouse(item.warehouse.name);
+      }),
+      switchMap((warehouse: WarehouseEntity) => {
+        if (!warehouse) {
+          throw new HttpException('Warehouse not found.', HttpStatus.NOT_FOUND);
+        }
+        item.warehouse = warehouse;
+        return from(this.itemRepository.update(itemPK, item));
+      }),
+    );
+  }
 
   remove(id: number, jwt: string): Observable<DeleteResult> {
+    const itemPK = { id: id, companyId: this.getJwtUserId(jwt) };
+    return from(this.itemRepository.delete(itemPK));
+  }
+
+  getJwtUserId(jwt: string) {
     //Extract token from authorization string
     jwt = jwt.replace('Bearer ', '');
     //Decode jwt and extract payload
     const json = this.jwtService.decode(jwt, { json: true }) as { user: User };
-
-    return from(this.itemRepository.delete({id: id, companyId: json.user.id}));
+    return json.user.id;
   }
 }
