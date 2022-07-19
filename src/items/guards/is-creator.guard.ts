@@ -30,7 +30,7 @@ export class IsCreatorGuard implements CanActivate {
     const userId = json.user.id;
     const itemId = params.id;
 
-    // Determine if logged-in user is the same as the user that created the feed post
+    // Determine if logged-in user is the same as the user that created the item
     return this.userService.findUserById(userId).pipe(
       switchMap((user: User) =>
         this.itemsService.findItemById(itemId, user.id).pipe(
