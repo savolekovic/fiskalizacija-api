@@ -131,8 +131,8 @@ export class ItemsService {
     const itemPK = { id, companyId: this.getJwtUserId(jwt) };
 
     return this.findItemById(id, itemPK.companyId).pipe(
-      switchMap((item: ItemEntity) => {
-        if (!item) {
+      switchMap((ItemEntity: ItemEntity) => {
+        if (!ItemEntity) {
           throw new HttpException('Item not found.', HttpStatus.NOT_FOUND);
         }
         return this.findManufacturer(item.manufacturer.title);
