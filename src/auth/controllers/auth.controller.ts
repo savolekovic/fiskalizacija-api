@@ -7,6 +7,7 @@ import { Customer } from '../models/dto/customer.dto';
 import { User } from '../models/dto/user.dto';
 import { AdminEntity } from '../models/entities/admin.entity';
 import { CompanyEntity } from '../models/entities/company.entity';
+import { CustomerEntity } from '../models/entities/customer.entity';
 import { AdminService } from '../services/auth-admin.service';
 import { CompanyService } from '../services/auth-company.service';
 import { CustomerService } from '../services/auth-customer.service';
@@ -45,7 +46,7 @@ export class AuthController {
 
   //ADMIN
   @Post('register/customer')
-  registerCustomer(@Body() customer: Customer): Observable<AdminEntity> {
+  registerCustomer(@Body() customer: Customer): Observable<CustomerEntity> {
     return this.customerService.register(customer);
   }
   @Post('login/customer')
