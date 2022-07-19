@@ -130,13 +130,7 @@ export class ItemsService {
   update(id: number, item: CreateItem, jwt: string) {
     const itemPK = { id, companyId: this.getJwtUserId(jwt) };
 
-    return this.findItemById(id, itemPK.companyId).pipe(
-      switchMap((ItemEntity: ItemEntity) => {
-        if (!ItemEntity) {
-          throw new HttpException('Item not found.', HttpStatus.NOT_FOUND);
-        }
-        return this.findManufacturer(item.manufacturer.title);
-      }),
+    return this.findManufacturer(item.manufacturer.title).pipe(
       switchMap((manufacturer: ManufacturerEntity) => {
         if (!manufacturer) {
           throw new HttpException(
