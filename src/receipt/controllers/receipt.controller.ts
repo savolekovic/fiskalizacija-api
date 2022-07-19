@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ReceiptService } from '../services/receipt.service';
 import { Receipt } from '../dto/receipt.dto';
+import { ReceiptService } from '../services/receipt.service';
 
 @Controller('receipt')
 export class ReceiptController {
@@ -8,7 +8,7 @@ export class ReceiptController {
 
   @Post()
   create(@Body() receipt: Receipt) {
-    return this.receiptService.create(Receipt);
+    return this.receiptService.create(receipt);
   }
 
   @Get()

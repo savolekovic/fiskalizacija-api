@@ -1,4 +1,13 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+
+import { ReceiptEntity } from 'src/receipt/entities/receipt.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { UserEntity } from './user.entity';
 
 @Entity('customer')
@@ -21,4 +30,7 @@ export class CustomerEntity {
 
   @Column()
   phoneNumber: string;
+
+  @OneToMany(() => ReceiptEntity, (receiptEntity) => receiptEntity.customer)
+  receipts: ReceiptEntity[];
 }

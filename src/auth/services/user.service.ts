@@ -4,7 +4,6 @@ import { from, map, Observable, of, switchMap } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../models/entities/user.entity';
 import { User } from '../models/dto/user.dto';
 

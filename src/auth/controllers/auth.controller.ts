@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
-import { JwtGuard } from '../guards/jwt.guard';
 import { Admin } from '../models/dto/admin.dto';
 import { Company } from '../models/dto/company.dto';
 import { Customer } from '../models/dto/customer.dto';
