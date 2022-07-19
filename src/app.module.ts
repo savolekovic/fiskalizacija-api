@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AllExceptionsFilter } from './core/all-exception.filter';
 import { ItemsModule } from './items/items.module';
+import { ReceiptModule } from './receipt/receipt.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ItemsModule } from './items/items.module';
     }),
     AuthModule,
     ItemsModule,
+    ReceiptModule,
   ],
   controllers: [AppController],
   providers: [

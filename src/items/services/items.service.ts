@@ -1,18 +1,15 @@
 import {
   HttpException,
   HttpStatus,
-  Injectable,
-  NotFoundException,
+  Injectable
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Request } from 'express';
 import { from, Observable, skip, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
 import { DeleteResult, Repository } from 'typeorm';
-import { CreateItem } from '../models/dto/create-item.dto';
-import { UpdateItem } from '../models/dto/update-item.dto';
+import { Item } from '../models/dto/item.dto';
 import { ItemEntity } from '../models/entities/item.entity';
 import { ManufacturerEntity } from '../models/entities/manufacturer.entity';
 import { TaxRateEntity } from '../models/entities/tax-rate.entity';
@@ -67,7 +64,7 @@ export class ItemsService {
     );
   }
 
-  create(item: CreateItem, jwt: string): Observable<ItemEntity> {
+  create(item: Item, jwt: string): Observable<ItemEntity> {
     const companyId = this.getJwtUserId(jwt);
 
     return this.findCompany(companyId).pipe(
@@ -127,7 +124,7 @@ export class ItemsService {
     );
   }
 
-  update(id: number, item: CreateItem, jwt: string) {
+  update(id: number, item: Item, jwt: string) {
     const itemPK = { id, companyId: this.getJwtUserId(jwt) };
 
     return this.findManufacturer(item.manufacturer.title).pipe(

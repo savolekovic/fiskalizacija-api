@@ -12,7 +12,7 @@ import { ManufacturerEntity } from '../entities/manufacturer.entity';
 import { TaxRateEntity } from '../entities/tax-rate.entity';
 import { WarehouseEntity } from '../entities/warehouse.entity';
 
-export class CreateItem {
+export class Item {
   company: CompanyEntity;
 
   @IsNotEmptyObject()

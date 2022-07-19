@@ -14,7 +14,7 @@ import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { DeleteResult } from 'typeorm';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
-import { CreateItem } from '../models/dto/create-item.dto';
+import { Item } from '../models/dto/item.dto';
 import { ItemEntity } from '../models/entities/item.entity';
 import { ItemsService } from '../services/items.service';
 
@@ -25,7 +25,7 @@ export class ItemsController {
   @UseGuards(JwtGuard)
   @Post()
   create(
-    @Body() item: CreateItem,
+    @Body() item: Item,
     @Headers('Authorization') auth: string,
   ): Observable<ItemEntity> {
     return from(this.itemsService.create(item, auth));
@@ -45,7 +45,7 @@ export class ItemsController {
   @Put(':id')
   update(
     @Param('id') id: number,
-    @Body() item: CreateItem,
+    @Body() item: Item,
     @Headers('Authorization') auth: string,
   ) {
     return this.itemsService.update(id, item, auth);
