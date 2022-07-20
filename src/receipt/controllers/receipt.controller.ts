@@ -6,6 +6,8 @@ import {
   UseGuards,
   Headers,
   Put,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { ReceiptItem } from '../dto/receipt-to-items.dto';
@@ -14,23 +16,12 @@ import { ReceiptService } from '../services/receipt.service';
 
 @Controller('receipt')
 export class ReceiptController {
-  constructor(
-    private readonly receiptService: ReceiptService
-  ) {}
+  constructor(private readonly receiptService: ReceiptService) {}
 
   @UseGuards(JwtGuard)
   @Post()
   createReceipt(@Headers('Authorization') auth: string) {
     return this.receiptService.createReceipt(auth);
-  }
-
-  @UseGuards(JwtGuard)
-  @Post('item')
-  addItem(
-    @Body() receiptItem: ReceiptItem,
-    @Headers('Authorization') auth: string,
-  ) {
-    return this.receiptService.addItem(receiptItem, auth);
   }
 
   @UseGuards(JwtGuard)
@@ -49,5 +40,20 @@ export class ReceiptController {
   @Get('closed')
   findReceipts() {
     return this.receiptService.findClosed();
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('item')
+  addItem(
+    @Body() receiptItem: ReceiptItem,
+    @Headers('Authorization') auth: string,
+  ) {
+    return this.receiptService.addReceiptItem(receiptItem, auth);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('item/:id')
+  deleteItem(@Param('id') id: number, @Headers('Authorization') auth: string) {
+    return this.receiptService.deleteReceiptItem(id, auth);
   }
 }
