@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ReceiptEntity } from './receipt.entity';
 
 @Entity('receipt_items')
-export class ReceiptItemsEntity {
+export class ReceiptItemEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

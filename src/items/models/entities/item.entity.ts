@@ -1,5 +1,5 @@
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
-import { ReceiptItemsEntity } from 'src/receipt/entities/receipt-to-items';
+import { ReceiptItemEntity } from 'src/receipt/entities/receipt-to-items.entity';
 import {
   Column,
   Entity,
@@ -82,6 +82,6 @@ export class ItemEntity {
   @Column()
   quantityInStock: number;
 
-  @OneToMany(() => ReceiptItemsEntity, (receiptItems) => receiptItems.item)
-  receiptItems!: ReceiptItemsEntity[];
+  @OneToMany(() => ReceiptItemEntity, (receiptItems) => receiptItems.item)
+  receiptItems!: ReceiptItemEntity[];
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   HttpException,
   HttpStatus,
@@ -10,9 +11,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, Observable, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
 import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
+import { ItemEntity } from 'src/items/models/entities/item.entity';
 import { Repository } from 'typeorm';
+import { ReceiptItem } from '../dto/receipt-to-items.dto';
 import { Receipt } from '../dto/receipt.dto';
 import { PaymentTypeEntity } from '../entities/payment-type.entity';
+import { ReceiptItemEntity } from '../entities/receipt-to-items.entity';
 import { ReceiptEntity } from '../entities/receipt.entity';
 
 @Injectable()
@@ -24,8 +28,48 @@ export class ReceiptService {
     private readonly receiptRepository: Repository<ReceiptEntity>,
     @InjectRepository(PaymentTypeEntity)
     private readonly paymentTypeEntityRepository: Repository<PaymentTypeEntity>,
+    @InjectRepository(ReceiptItemEntity)
+    private readonly receiptItemEntityRepository: Repository<ReceiptItemEntity>,
+    @InjectRepository(ItemEntity)
+    private readonly itemRepository: Repository<ItemEntity>,
     private jwtService: JwtService,
   ) {}
+
+  findPaymentType(title: string) {
+    return from(
+      this.paymentTypeEntityRepository.findOne({
+        where: { title },
+      }),
+    );
+  }
+
+  findCustomerWithId(userId: number) {
+    return from(
+      this.customerRepository.findOne({
+        where: { id: userId },
+      }),
+    );
+  }
+
+  doesCustomerHaveOpenReceipt(customer: CustomerEntity) {
+    return from(
+      this.receiptRepository.findOne({
+        where: {
+          customer: customer,
+          isReceiptClosed: false,
+        },
+      }),
+    );
+  }
+
+  getJwtUserId(jwt: string) {
+    //Extract token from authorization string
+    jwt = jwt.replace('Bearer ', '');
+    //Decode jwt and extract payload
+    const json = this.jwtService.decode(jwt, { json: true }) as { user: User };
+
+    return json.user.id;
+  }
 
   createReceipt(jwt: string) {
     const userId = this.getJwtUserId(jwt);
@@ -44,17 +88,6 @@ export class ReceiptService {
           newReceipt = receipt;
         }
         return from(this.receiptRepository.save(newReceipt));
-      }),
-    );
-  }
-
-  doesCustomerHaveOpenReceipt(customer: CustomerEntity) {
-    return from(
-      this.receiptRepository.findOne({
-        where: {
-          customer: customer,
-          isReceiptClosed: false,
-        },
       }),
     );
   }
@@ -108,28 +141,54 @@ export class ReceiptService {
     );
   }
 
-  findPaymentType(title: string) {
+  addItem(receiptItem: ReceiptItem, jwt: string) {
+    var newReceiptItem = new ReceiptItemEntity();
+    newReceiptItem.quantity = receiptItem.quantity;
+
     return from(
-      this.paymentTypeEntityRepository.findOne({
-        where: { title },
+      this.createReceipt(jwt).pipe(
+        switchMap((receiptEntity: ReceiptEntity) => {
+          if (!receiptEntity) throw new BadRequestException();
+          newReceiptItem.receipt = receiptEntity;
+          return this.findItem(receiptItem.itemId, receiptItem.companyId);
+        }),
+        switchMap((itemEntity: ItemEntity) => {
+          if (!itemEntity)
+            throw new HttpException('Item not found', HttpStatus.NOT_FOUND);
+          newReceiptItem.item = itemEntity;
+          return this.checkIfItemAlreadyExists(newReceiptItem);
+        }),
+        switchMap((receiptItemEntity: ReceiptItemEntity) => {
+          if (!receiptItemEntity)
+            return this.receiptItemEntityRepository.save(newReceiptItem);
+          else {
+            newReceiptItem.quantity += receiptItemEntity.quantity;
+            return this.receiptItemEntityRepository.update(
+              receiptItemEntity.id,
+              newReceiptItem,
+            );
+          }
+        }),
+      ),
+    );
+  }
+
+  checkIfItemAlreadyExists(newReceiptItem: ReceiptItemEntity) {
+    return from(
+      this.receiptItemEntityRepository.findOne({
+        where: {
+          item: newReceiptItem.item,
+          receipt: newReceiptItem.receipt,
+        },
       }),
     );
   }
 
-  findCustomerWithId(userId: number) {
+  findItem(itemId: number, companyId: number) {
     return from(
-      this.customerRepository.findOne({
-        where: { id: userId },
+      this.itemRepository.findOne({
+        where: { id: itemId, companyId: companyId },
       }),
     );
-  }
-
-  getJwtUserId(jwt: string) {
-    //Extract token from authorization string
-    jwt = jwt.replace('Bearer ', '');
-    //Decode jwt and extract payload
-    const json = this.jwtService.decode(jwt, { json: true }) as { user: User };
-
-    return json.user.id;
   }
 }

@@ -8,17 +8,29 @@ import {
   Put,
 } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { ReceiptItem } from '../dto/receipt-to-items.dto';
 import { Receipt } from '../dto/receipt.dto';
 import { ReceiptService } from '../services/receipt.service';
 
 @Controller('receipt')
 export class ReceiptController {
-  constructor(private readonly receiptService: ReceiptService) {}
+  constructor(
+    private readonly receiptService: ReceiptService
+  ) {}
 
   @UseGuards(JwtGuard)
   @Post()
-  create(@Headers('Authorization') auth: string) {
+  createReceipt(@Headers('Authorization') auth: string) {
     return this.receiptService.createReceipt(auth);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('item')
+  addItem(
+    @Body() receiptItem: ReceiptItem,
+    @Headers('Authorization') auth: string,
+  ) {
+    return this.receiptService.addItem(receiptItem, auth);
   }
 
   @UseGuards(JwtGuard)

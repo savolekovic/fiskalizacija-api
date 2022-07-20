@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { PaymentTypeEntity } from './payment-type.entity';
-import { ReceiptItemsEntity } from './receipt-to-items';
+import { ReceiptItemEntity } from './receipt-to-items.entity';
 
 @Entity('receipt')
 export class ReceiptEntity {
@@ -38,9 +38,9 @@ export class ReceiptEntity {
   @Column({ nullable: true })
   receiptNumber: number;
 
-  @Column({ default: false})
+  @Column({ default: false })
   isReceiptClosed: boolean;
 
-  @OneToMany(() => ReceiptItemsEntity, (receiptItems) => receiptItems.receipt)
-  receiptItems!: ReceiptItemsEntity[];
+  @OneToMany(() => ReceiptItemEntity, (receiptItems) => receiptItems.receipt)
+  receiptItems!: ReceiptItemEntity[];
 }

@@ -4,9 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReceiptEntity } from './entities/receipt.entity';
 import { PaymentTypeEntity } from './entities/payment-type.entity';
 import { ReceiptService } from './services/receipt.service';
-import { ReceiptItemsEntity } from './entities/receipt-to-items';
+import { ReceiptItemEntity } from './entities/receipt-to-items.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
+import { ItemEntity } from 'src/items/models/entities/item.entity';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
     TypeOrmModule.forFeature([
       ReceiptEntity,
       PaymentTypeEntity,
-      ReceiptItemsEntity,
+      ReceiptItemEntity,
       CustomerEntity,
+      ItemEntity,
     ]),
   ],
   controllers: [ReceiptController],
