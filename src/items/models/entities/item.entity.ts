@@ -1,9 +1,11 @@
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
+import { ReceiptItemsEntity } from 'src/receipt/entities/receipt-to-article';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -79,4 +81,7 @@ export class ItemEntity {
 
   @Column()
   quantityInStock: number;
+
+  @OneToMany(() => ReceiptItemsEntity, (receiptItems) => receiptItems.item)
+  receiptItems!: ReceiptItemsEntity[];
 }

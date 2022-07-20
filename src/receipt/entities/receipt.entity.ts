@@ -1,6 +1,13 @@
 import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { PaymentTypeEntity } from './payment-type.entity';
+import { ReceiptItemsEntity } from './receipt-to-article';
 
 @Entity('receipt')
 export class ReceiptEntity {
@@ -10,14 +17,14 @@ export class ReceiptEntity {
   @ManyToOne(
     () => PaymentTypeEntity,
     (paymentTypeEntity) => paymentTypeEntity.receipts,
-    { eager: true , nullable: true},
+    { eager: true, nullable: true },
   )
   paymentType: PaymentTypeEntity;
 
   @ManyToOne(
     () => CustomerEntity,
     (customerEntity) => customerEntity.receipts,
-    { eager: true , nullable: true},
+    { eager: true, nullable: true },
   )
   customer: CustomerEntity;
 
@@ -33,4 +40,7 @@ export class ReceiptEntity {
 
   @Column({ nullable: true })
   isReceiptClosed: boolean;
+
+  @OneToMany(() => ReceiptItemsEntity, (receiptItems) => receiptItems.receipt)
+  receiptItems!: ReceiptItemsEntity[];
 }
