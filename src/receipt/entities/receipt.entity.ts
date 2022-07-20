@@ -24,7 +24,7 @@ export class ReceiptEntity {
   @ManyToOne(
     () => CustomerEntity,
     (customerEntity) => customerEntity.receipts,
-    { eager: true, nullable: true },
+    { eager: true },
   )
   customer: CustomerEntity;
 
@@ -38,7 +38,7 @@ export class ReceiptEntity {
   @Column({ nullable: true })
   receiptNumber: number;
 
-  @Column({ nullable: true })
+  @Column({ default: false})
   isReceiptClosed: boolean;
 
   @OneToMany(() => ReceiptItemsEntity, (receiptItems) => receiptItems.receipt)

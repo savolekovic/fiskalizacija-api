@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Headers,
+  Put,
+} from '@nestjs/common';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { Receipt } from '../dto/receipt.dto';
 import { ReceiptService } from '../services/receipt.service';
 
@@ -6,28 +15,27 @@ import { ReceiptService } from '../services/receipt.service';
 export class ReceiptController {
   constructor(private readonly receiptService: ReceiptService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
-  create(@Body() receipt: Receipt) {
-    return this.receiptService.create(receipt);
+  create(@Headers('Authorization') auth: string) {
+    return this.receiptService.createReceipt(auth);
   }
 
+  @UseGuards(JwtGuard)
+  @Put()
+  update(@Body() receipt: Receipt, @Headers('Authorization') auth: string) {
+    return this.receiptService.closeReceipt(receipt, auth);
+  }
+
+  @UseGuards(JwtGuard)
   @Get()
-  findAll() {
-    return this.receiptService.findAll();
+  find(@Headers('Authorization') auth: string) {
+    return this.receiptService.findOpenReceipt(auth);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.receiptService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() receipt: Receipt) {
-    return this.receiptService.update(+id, receipt);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.receiptService.remove(+id);
+  @UseGuards(JwtGuard)
+  @Get('closed')
+  findReceipts() {
+    return this.receiptService.findClosed();
   }
 }
