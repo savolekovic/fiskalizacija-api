@@ -141,7 +141,7 @@ export class ReceiptService {
     );
   }
 
-  addItem(receiptItem: ReceiptItem, jwt: string) {
+  addReceiptItem(receiptItem: ReceiptItem, jwt: string) {
     var newReceiptItem = new ReceiptItemEntity();
     newReceiptItem.quantity = receiptItem.quantity;
 
@@ -170,6 +170,20 @@ export class ReceiptService {
           }
         }),
       ),
+    );
+  }
+
+  deleteReceiptItem(id: number, jwt: string) {
+    const userId = this.getJwtUserId(jwt);
+
+    return this.findCustomerWithId(userId).pipe(
+      switchMap((customer: CustomerEntity) => {
+        if (!customer) {
+          throw new ForbiddenException();
+        }
+
+        return this.receiptItemEntityRepository.delete(id);
+      }),
     );
   }
 
