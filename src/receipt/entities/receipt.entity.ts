@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { PaymentTypeEntity } from './payment-type.entity';
-import { ReceiptItemsEntity } from './receipt-to-article';
+import { ReceiptItemsEntity } from './receipt-to-items';
 
 @Entity('receipt')
 export class ReceiptEntity {
