@@ -73,7 +73,7 @@ export class ReceiptService {
 
   createReceipt(jwt: string) {
     const userId = this.getJwtUserId(jwt);
-    var newReceipt = new ReceiptEntity();
+    let newReceipt = new ReceiptEntity();
 
     return this.findCustomerWithId(userId).pipe(
       switchMap((customer: CustomerEntity) => {
@@ -142,7 +142,7 @@ export class ReceiptService {
   }
 
   addReceiptItem(receiptItem: ReceiptItem, jwt: string) {
-    var newReceiptItem = new ReceiptItemEntity();
+    let newReceiptItem = new ReceiptItemEntity();
     newReceiptItem.quantity = receiptItem.quantity;
 
     return from(
