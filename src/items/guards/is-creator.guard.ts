@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { User } from 'src/auth/models/dto/user.dto';
-import { UserEntity } from 'src/auth/models/entities/user.entity';
 import { UserService } from 'src/auth/services/user.service';
 import { ItemEntity } from '../models/entities/item.entity';
 import { ItemsService } from '../services/items.service';
