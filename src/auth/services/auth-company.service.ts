@@ -108,8 +108,17 @@ export class CompanyService {
         } else {
           company.street = streetEntity;
         }
+        //Status is always false on registration(needs admin approval)
+        company.status = false;
         //Save Company and all other entities (cascade set) to the DB
-        return from(this.companyRepository.save(company));
+        return from(this.companyRepository.save(company)).pipe(
+          map((companyEntity: CompanyEntity) => {
+            delete companyEntity.user.password;
+            delete companyEntity.user.id;
+
+            return companyEntity;
+          }),
+        );
       }),
     );
   }

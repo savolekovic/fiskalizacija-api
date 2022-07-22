@@ -2,9 +2,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNumber,
-  IsNumberString,
   IsString,
-  Length,
   Max,
   Min,
 } from 'class-validator';
@@ -82,4 +80,6 @@ export class Company {
   @IsNumber()
   @IsNotEmpty()
   streetNumber: number;
+
+  status = false;
 }

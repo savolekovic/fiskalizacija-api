@@ -50,7 +50,14 @@ export class CustomerService {
         user.password = hashedPassword;
 
         customer.user = user;
-        return from(this.customerRepository.save(customer));
+        return from(this.customerRepository.save(customer)).pipe(
+          map((customerEntity: CustomerEntity) => {
+            delete customerEntity.user.password;
+            delete customerEntity.user.id;
+
+            return customerEntity;
+          }),
+        );
       }),
     );
   }
@@ -59,7 +66,7 @@ export class CustomerService {
     return this.validate(username, password).pipe(
       switchMap((customer: CustomerEntity) => {
         if (customer) {
-          const payload =  {user: customer.user};
+          const payload = { user: customer.user };
           //create JWT - credentials
           //jwtService.signAsync returns Promise<string>
           return from(this.jwtService.signAsync(payload));
