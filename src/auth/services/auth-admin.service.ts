@@ -49,10 +49,10 @@ export class AdminService {
     return this.validate(username, password).pipe(
       switchMap((admin: AdminEntity) => {
         if (admin) {
-          const payload = {user: admin.user};
+          const payload = { user: admin.user };
           //create JWT - credentials
           //jwtService.signAsync returns Promise<string>
-          return from(this.jwtService.signAsync( payload ));
+          return from(this.jwtService.signAsync(payload));
         }
       }),
     );
@@ -80,6 +80,21 @@ export class AdminService {
             }
           }),
         );
+      }),
+    );
+  }
+
+  findAdminById(id: number): Observable<AdminEntity> {
+    return from(
+      this.adminRepository.findOne({
+        where: { id },
+      }),
+    ).pipe(
+      map((admin: AdminEntity) => {
+        if (!admin) {
+          throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
+        }
+        return admin;
       }),
     );
   }

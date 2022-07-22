@@ -1,4 +1,13 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { JwtGuard } from './../guards/jwt.guard';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import { Admin } from '../models/dto/admin.dto';
 import { Company } from '../models/dto/company.dto';
@@ -10,6 +19,7 @@ import { CustomerEntity } from '../models/entities/customer.entity';
 import { AdminService } from '../services/auth-admin.service';
 import { CompanyService } from '../services/auth-company.service';
 import { CustomerService } from '../services/auth-customer.service';
+import { IsAdminGuard } from '../guards/is-admin.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +34,7 @@ export class AuthController {
   registerCompany(@Body() company: Company): Observable<CompanyEntity> {
     return this.companyService.register(company);
   }
+
   @Post('login/company')
   loginCompany(@Body() user: User): Observable<{ token: string }> {
     return this.companyService
@@ -31,11 +42,24 @@ export class AuthController {
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
+  @UseGuards(JwtGuard, IsAdminGuard)
+  @Patch('disable/:id')
+  disableCompany(@Param('id') companyId: number) {
+    return this.companyService.enableDisable(companyId, false);
+  }
+
+  @UseGuards(JwtGuard, IsAdminGuard)
+  @Patch('enable/:id')
+  enableCompany(@Param('id') companyId: number) {
+    return this.companyService.enableDisable(companyId, true);
+  }
+
   //ADMIN
   @Post('register/admin')
   registerAdmin(@Body() admin: Admin): Observable<AdminEntity> {
     return this.adminService.registerAdmin(admin);
   }
+
   @Post('login/admin')
   loginAdmin(@Body() user: User): Observable<{ token: string }> {
     return this.adminService
@@ -48,6 +72,7 @@ export class AuthController {
   registerCustomer(@Body() customer: Customer): Observable<CustomerEntity> {
     return this.customerService.register(customer);
   }
+
   @Post('login/customer')
   loginCustomer(@Body() user: User): Observable<{ token: string }> {
     return this.customerService

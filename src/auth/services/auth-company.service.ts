@@ -118,10 +118,10 @@ export class CompanyService {
     return this.validate(username, password).pipe(
       switchMap((company: CompanyEntity) => {
         if (company) {
-          const payload = {user: company.user};
+          const payload = { user: company.user };
           //create JWT - credentials
           //jwtService.signAsync returns Promise<string>
-          return from(this.jwtService.signAsync( payload ));
+          return from(this.jwtService.signAsync(payload));
         }
       }),
     );
@@ -194,6 +194,20 @@ export class CompanyService {
     return from(
       this.streetRepository.findOne({
         where: { streetName },
+      }),
+    );
+  }
+
+  enableDisable(companyId: number, newStatus: boolean) {
+    return from(
+      this.companyRepository.findOne({
+        where: { id: companyId },
+      }),
+    ).pipe(
+      switchMap((company: CompanyEntity) => {
+        if (!company)
+          throw new HttpException('Company not found.', HttpStatus.NOT_FOUND);
+        return this.companyRepository.update(company.id, { status: newStatus });
       }),
     );
   }
