@@ -135,12 +135,14 @@ export class CompanyService {
         .getOne(),
     ).pipe(
       switchMap((company: CompanyEntity) => {
-        if (!company) {
+        if (!company)
+          throw new HttpException('Invalid Credentials', HttpStatus.NOT_FOUND);
+
+        if (!company.status)
           throw new HttpException(
-            { status: HttpStatus.NOT_FOUND, error: 'Invalid Credentials' },
-            HttpStatus.NOT_FOUND,
+            'Company account disabled',
+            HttpStatus.FORBIDDEN,
           );
-        }
         return from(bcrypt.compare(password, company.user.password)).pipe(
           map((isValidPassword: boolean) => {
             if (isValidPassword) {
