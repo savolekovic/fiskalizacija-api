@@ -2,7 +2,6 @@ import { JwtGuard } from './../guards/jwt.guard';
 import {
   Body,
   Controller,
-  Get,
   Param,
   Patch,
   Post,
@@ -20,39 +19,16 @@ import { AdminService } from '../services/auth-admin.service';
 import { CompanyService } from '../services/auth-company.service';
 import { CustomerService } from '../services/auth-customer.service';
 import { IsAdminGuard } from '../guards/is-admin.guard';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('auth')
+@Controller()
+@ApiTags('Authentication')
 export class AuthController {
   constructor(
     private companyService: CompanyService,
     private adminService: AdminService,
     private customerService: CustomerService,
   ) {}
-
-  //COMPANY
-  @Post('register/company')
-  registerCompany(@Body() company: Company): Observable<CompanyEntity> {
-    return this.companyService.register(company);
-  }
-
-  @Post('login/company')
-  loginCompany(@Body() user: User): Observable<{ token: string }> {
-    return this.companyService
-      .login(user)
-      .pipe(map((jwt: string) => ({ token: jwt })));
-  }
-
-  @UseGuards(JwtGuard, IsAdminGuard)
-  @Patch('disable/:id')
-  disableCompany(@Param('id') companyId: number) {
-    return this.companyService.enableDisable(companyId, false);
-  }
-
-  @UseGuards(JwtGuard, IsAdminGuard)
-  @Patch('enable/:id')
-  enableCompany(@Param('id') companyId: number) {
-    return this.companyService.enableDisable(companyId, true);
-  }
 
   //ADMIN
   @Post('register/admin')
@@ -78,5 +54,30 @@ export class AuthController {
     return this.customerService
       .login(user)
       .pipe(map((jwt: string) => ({ token: jwt })));
+  }
+
+  //COMPANY
+  @Post('register/company')
+  registerCompany(@Body() company: Company): Observable<CompanyEntity> {
+    return this.companyService.register(company);
+  }
+
+  @Post('login/company')
+  loginCompany(@Body() user: User): Observable<{ token: string }> {
+    return this.companyService
+      .login(user)
+      .pipe(map((jwt: string) => ({ token: jwt })));
+  }
+
+  @UseGuards(JwtGuard, IsAdminGuard)
+  @Patch('disable/:id')
+  disableCompany(@Param('id') companyId: number) {
+    return this.companyService.enableDisable(companyId, false);
+  }
+
+  @UseGuards(JwtGuard, IsAdminGuard)
+  @Patch('enable/:id')
+  enableCompany(@Param('id') companyId: number) {
+    return this.companyService.enableDisable(companyId, true);
   }
 }

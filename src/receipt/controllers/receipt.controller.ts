@@ -9,12 +9,14 @@ import {
   Delete,
   Param,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { ReceiptItem } from '../dto/receipt-to-items.dto';
 import { Receipt } from '../dto/receipt.dto';
 import { ReceiptService } from '../services/receipt.service';
 
 @Controller('receipt')
+@ApiTags('Receipt')
 export class ReceiptController {
   constructor(private readonly receiptService: ReceiptService) {}
 

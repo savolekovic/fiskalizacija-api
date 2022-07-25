@@ -10,6 +10,7 @@ import {
   UseGuards,
   Headers,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { DeleteResult } from 'typeorm';
@@ -19,6 +20,7 @@ import { ItemEntity } from '../models/entities/item.entity';
 import { ItemsService } from '../services/items.service';
 
 @Controller('items')
+@ApiTags('Items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
