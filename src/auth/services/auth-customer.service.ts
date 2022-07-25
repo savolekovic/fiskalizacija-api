@@ -52,8 +52,7 @@ export class CustomerService {
         customer.user = user;
         return from(this.customerRepository.save(customer)).pipe(
           map((customerEntity: CustomerEntity) => {
-            delete customerEntity.user.password;
-            delete customerEntity.user.id;
+            delete customerEntity.user;
 
             return customerEntity;
           }),

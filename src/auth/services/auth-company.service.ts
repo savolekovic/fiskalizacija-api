@@ -113,8 +113,7 @@ export class CompanyService {
         //Save Company and all other entities (cascade set) to the DB
         return from(this.companyRepository.save(company)).pipe(
           map((companyEntity: CompanyEntity) => {
-            delete companyEntity.user.password;
-            delete companyEntity.user.id;
+            delete companyEntity.user;
 
             return companyEntity;
           }),

@@ -42,8 +42,7 @@ export class AdminService {
         admin.user = user;
         return from(this.adminRepository.save(admin)).pipe(
           map((adminEntity: AdminEntity) => {
-            delete adminEntity.user.password;
-            delete adminEntity.user.id;
+            delete adminEntity.user;
 
             return adminEntity;
           }),
