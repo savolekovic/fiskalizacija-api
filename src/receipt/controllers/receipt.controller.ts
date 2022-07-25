@@ -1,3 +1,4 @@
+import { ReceiptEntity } from './../entities/receipt.entity';
 import {
   Controller,
   Get,
@@ -9,7 +10,7 @@ import {
   Delete,
   Param,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { ReceiptItem } from '../dto/receipt-to-items.dto';
 import { Receipt } from '../dto/receipt.dto';
@@ -20,6 +21,8 @@ import { ReceiptService } from '../services/receipt.service';
 export class ReceiptController {
   constructor(private readonly receiptService: ReceiptService) {}
 
+  //We dont need this ENDPOINT since the Receipt is created when the Customer adds an item to the cart.
+  @ApiCreatedResponse({ type: ReceiptEntity })
   @UseGuards(JwtGuard)
   @Post()
   createReceipt(@Headers('Authorization') auth: string) {
