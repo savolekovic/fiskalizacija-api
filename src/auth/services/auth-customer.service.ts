@@ -91,10 +91,7 @@ export class CustomerService {
         }
         return from(bcrypt.compare(password, customer.user.password)).pipe(
           map((isValidPassword: boolean) => {
-            if (isValidPassword) {
-              delete customer.user.password;
-              return customer;
-            }
+            if (isValidPassword) return customer;
           }),
         );
       }),

@@ -116,20 +116,6 @@ export class CompanyService {
       }),
     );
   }
-  findCompanyById(id: number): Observable<CompanyEntity> {
-    return from(
-      this.companyRepository.findOne({
-        where: { id },
-      }),
-    ).pipe(
-      map((company: CompanyEntity) => {
-        if (!company) {
-          throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
-        }
-        return company;
-      }),
-    );
-  }
   login(user: User): Observable<string> {
     const { username, password } = user;
     return this.validate(username, password).pipe(
@@ -162,12 +148,24 @@ export class CompanyService {
           );
         return from(bcrypt.compare(password, company.user.password)).pipe(
           map((isValidPassword: boolean) => {
-            if (isValidPassword) {
-              delete company.user.password;
-              return company;
-            }
+            if (isValidPassword) return company;
           }),
         );
+      }),
+    );
+  }
+
+  findCompanyById(id: number): Observable<CompanyEntity> {
+    return from(
+      this.companyRepository.findOne({
+        where: { id },
+      }),
+    ).pipe(
+      map((company: CompanyEntity) => {
+        if (!company) {
+          throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
+        }
+        return company;
       }),
     );
   }
