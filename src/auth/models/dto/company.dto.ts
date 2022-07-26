@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsNumber,
   IsString,
   Max,
@@ -24,25 +25,14 @@ export class Company {
   @IsNotEmpty()
   password: string;
 
+  @IsNotEmptyObject()
   companyType: CompanyTypeEntity;
-  @IsString()
-  @IsNotEmpty()
-  companyTypeName: string;
-
+  @IsNotEmptyObject()
   country: CountryEntity;
-  @IsString()
-  @IsNotEmpty()
-  countryName: string;
-
+  @IsNotEmptyObject()
   city: CityEntity;
-  @IsString()
-  @IsNotEmpty()
-  cityName: string;
-
+  @IsNotEmptyObject()
   street: StreetEntity;
-  @IsString()
-  @IsNotEmpty()
-  streetName: string;
 
   //Company Entity attributes
   @IsString()

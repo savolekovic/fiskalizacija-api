@@ -33,15 +33,8 @@ export class CompanyService {
   ) {}
 
   register(company: Company): Observable<CompanyEntity> {
-    const {
-      username,
-      password,
-      email,
-      companyTypeName,
-      countryName,
-      cityName,
-      streetName,
-    } = company;
+    const { username, password, email, companyType, country, city, street } =
+      company;
 
     return this.userService.doesUsernameExist(username).pipe(
       tap((doesUsernameExist: boolean) => {
@@ -70,7 +63,7 @@ export class CompanyService {
         user.password = hashedPassword;
         company.user = user;
 
-        return this.findCompanyType(companyTypeName);
+        return this.findCompanyType(companyType.typeName);
       }),
       switchMap((companyTypeEntity: CompanyTypeEntity) => {
         if (!companyTypeEntity) {
@@ -81,7 +74,7 @@ export class CompanyService {
         }
         company.companyType = companyTypeEntity;
 
-        return this.findCountry(countryName);
+        return this.findCountry(country.countryName);
       }),
       switchMap((countryEntity: CountryEntity) => {
         if (!countryEntity) {
@@ -89,7 +82,7 @@ export class CompanyService {
         }
         company.country = countryEntity;
 
-        return this.findCity(cityName);
+        return this.findCity(city.cityName);
       }),
       switchMap((cityEntity: CityEntity) => {
         if (!cityEntity) {
@@ -97,12 +90,12 @@ export class CompanyService {
         }
 
         company.city = cityEntity;
-        return this.findStreet(streetName);
+        return this.findStreet(street.streetName);
       }),
       switchMap((streetEntity: StreetEntity) => {
         if (!streetEntity) {
           const newStreetEntity = new StreetEntity();
-          newStreetEntity.streetName = streetName;
+          newStreetEntity.streetName = street.streetName;
 
           company.street = newStreetEntity;
         } else {
