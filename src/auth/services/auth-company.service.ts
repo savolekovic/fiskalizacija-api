@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, Observable, of, switchMap, tap } from 'rxjs';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Company } from '../models/dto/company.dto';
 import { User } from '../models/dto/user.dto';
 import { UserEntity } from '../models/entities/user.entity';
@@ -225,6 +225,9 @@ export class CompanyService {
         if (!company)
           throw new HttpException('Company not found.', HttpStatus.NOT_FOUND);
         return this.companyRepository.update(company.id, { status: newStatus });
+      }),
+      map((updateResult: UpdateResult) => {
+        return { affected: updateResult.affected };
       }),
     );
   }

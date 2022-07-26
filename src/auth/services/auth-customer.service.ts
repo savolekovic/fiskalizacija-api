@@ -84,10 +84,7 @@ export class CustomerService {
     ).pipe(
       switchMap((customer: CustomerEntity) => {
         if (!customer) {
-          throw new HttpException(
-            { status: HttpStatus.NOT_FOUND, error: 'Invalid Credentials' },
-            HttpStatus.NOT_FOUND,
-          );
+          throw new HttpException('Invalid Credentials', HttpStatus.NOT_FOUND);
         }
         return from(bcrypt.compare(password, customer.user.password)).pipe(
           map((isValidPassword: boolean) => {
