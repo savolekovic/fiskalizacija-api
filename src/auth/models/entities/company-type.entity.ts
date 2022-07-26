@@ -4,7 +4,7 @@ import { CompanyEntity } from './company.entity';
 
 @Entity('company_type')
 export class CompanyTypeEntity {
-  @ApiProperty({ required: true })
+  @ApiProperty()
   @PrimaryColumn()
   typeName: string;
 

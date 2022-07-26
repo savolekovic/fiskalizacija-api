@@ -43,7 +43,7 @@ export class CompanyEntity {
   })
   country: CountryEntity;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => CityEntity })
   @ManyToOne(() => CityEntity, (cityEntity) => cityEntity.users, {
     eager: true,
   })

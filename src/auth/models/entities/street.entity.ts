@@ -4,7 +4,7 @@ import { CompanyEntity } from './company.entity';
 
 @Entity('street')
 export class StreetEntity {
-  @ApiProperty({ required: true })
+  @ApiProperty()
   @PrimaryColumn()
   streetName: string;
 
