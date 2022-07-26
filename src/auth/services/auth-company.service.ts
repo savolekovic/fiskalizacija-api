@@ -5,7 +5,6 @@ import { from, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Company } from '../models/dto/company.dto';
 import { User } from '../models/dto/user.dto';
-import { CompanyEntity } from '../models/entities/company.entity';
 import { UserEntity } from '../models/entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
@@ -14,6 +13,7 @@ import { CompanyTypeEntity } from '../models/entities/company-type.entity';
 import { CountryEntity } from '../models/entities/country.entity';
 import { CityEntity } from '../models/entities/city.entity';
 import { UserService } from './user.service';
+import { CompanyEntity } from '../models/entities/company.entity';
 
 @Injectable()
 export class CompanyService {
@@ -105,12 +105,28 @@ export class CompanyService {
         company.status = false;
         //Save Company and all other entities (cascade set) to the DB
         return from(this.companyRepository.save(company)).pipe(
-          map((companyEntity: CompanyEntity) => {
-            delete companyEntity.user;
-
-            return companyEntity;
+          switchMap((companyEntity: CompanyEntity) => {
+            return this.findCompanyById(companyEntity.id);
+          }),
+          map((savedCompany: CompanyEntity) => {
+            delete savedCompany.user.id;
+            return savedCompany;
           }),
         );
+      }),
+    );
+  }
+  findCompanyById(id: number): Observable<CompanyEntity> {
+    return from(
+      this.companyRepository.findOne({
+        where: { id },
+      }),
+    ).pipe(
+      map((company: CompanyEntity) => {
+        if (!company) {
+          throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
+        }
+        return company;
       }),
     );
   }
