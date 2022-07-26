@@ -43,12 +43,11 @@ export class AdminService {
         return from(this.adminRepository.save(admin));
       }),
       switchMap((adminEntity: AdminEntity) => {
-        return this.findAdminById(adminEntity.id).pipe(
-          map((admin: AdminEntity) => {
-            delete admin.user.id;
-            return admin;
-          }),
-        );
+        return this.findAdminById(adminEntity.id);
+      }),
+      map((admin: AdminEntity) => {
+        delete admin.user.id;
+        return admin;
       }),
     );
   }
