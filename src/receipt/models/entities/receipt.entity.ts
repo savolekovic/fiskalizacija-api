@@ -1,3 +1,4 @@
+import { timestamp } from 'rxjs';
 import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
 import {
   Column,
@@ -41,7 +42,7 @@ export class ReceiptEntity {
   @Column({ default: false })
   isReceiptClosed: boolean;
 
-  @Column({ default: false })
+  @Column({ nullable: true })
   dateOfClosure: Date;
 
   @OneToMany(() => ReceiptItemEntity, (receiptItems) => receiptItems.receipt)
