@@ -40,11 +40,13 @@ export class AdminService {
         user.password = hashedPassword;
 
         admin.user = user;
-        return from(this.adminRepository.save(admin)).pipe(
-          map((adminEntity: AdminEntity) => {
-            delete adminEntity.user;
-
-            return adminEntity;
+        return from(this.adminRepository.save(admin));
+      }),
+      switchMap((adminEntity: AdminEntity) => {
+        return this.findAdminById(adminEntity.id).pipe(
+          map((admin: AdminEntity) => {
+            delete admin.user.id;
+            return admin;
           }),
         );
       }),
