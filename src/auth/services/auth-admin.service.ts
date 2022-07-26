@@ -79,12 +79,10 @@ export class AdminService {
             HttpStatus.NOT_FOUND,
           );
         }
+        
         return from(bcrypt.compare(password, admin.user.password)).pipe(
           map((isValidPassword: boolean) => {
-            if (isValidPassword) {
-              delete admin.user.password;
-              return admin;
-            }
+            if (isValidPassword) return admin;
           }),
         );
       }),
