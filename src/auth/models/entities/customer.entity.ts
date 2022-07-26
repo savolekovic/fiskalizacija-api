@@ -1,4 +1,3 @@
-
 import { ReceiptEntity } from 'src/receipt/entities/receipt.entity';
 import {
   Column,
@@ -15,7 +14,7 @@ export class CustomerEntity {
   @PrimaryColumn()
   id: number;
 
-  @OneToOne(() => UserEntity, { cascade: true })
+  @OneToOne(() => UserEntity, { cascade: true, eager: true })
   @JoinColumn({ name: 'id', referencedColumnName: 'id' })
   user: UserEntity;
 

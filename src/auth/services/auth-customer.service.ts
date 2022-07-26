@@ -50,13 +50,14 @@ export class CustomerService {
         user.password = hashedPassword;
 
         customer.user = user;
-        return from(this.customerRepository.save(customer)).pipe(
-          map((customerEntity: CustomerEntity) => {
-            delete customerEntity.user;
-
-            return customerEntity;
-          }),
-        );
+        return from(this.customerRepository.save(customer));
+      }),
+      switchMap((customerEntity: CustomerEntity) => {
+        return this.findCustomerById(customerEntity.id);
+      }),
+      map((customer: CustomerEntity) => {
+        delete customer.user.id;
+        return customer;
       }),
     );
   }
@@ -108,6 +109,21 @@ export class CustomerService {
     ).pipe(
       switchMap((customer: CustomerEntity) => {
         return of(!!customer);
+      }),
+    );
+  }
+
+  findCustomerById(id: number): Observable<CustomerEntity> {
+    return from(
+      this.customerRepository.findOne({
+        where: { id },
+      }),
+    ).pipe(
+      map((customer: CustomerEntity) => {
+        if (!customer) {
+          throw new HttpException('Customer not found', HttpStatus.NOT_FOUND);
+        }
+        return customer;
       }),
     );
   }
