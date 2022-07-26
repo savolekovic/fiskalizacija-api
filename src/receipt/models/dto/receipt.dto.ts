@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNotEmptyObject, IsNumber } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNotEmptyObject, IsNumber } from 'class-validator';
 import { PaymentTypeEntity } from '../entities/payment-type.entity';
 
 export class Receipt {
@@ -16,6 +16,10 @@ export class Receipt {
   @IsNumber()
   @IsNotEmpty()
   receiptNumber: number;
+
+  @IsDate()
+  @IsNotEmpty()
+  dateOfClosure: Date;
 
   isReceiptClosed?: boolean;
 }

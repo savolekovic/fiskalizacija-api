@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ReceiptEntity } from 'src/receipt/entities/receipt.entity';
+import { ReceiptEntity } from 'src/receipt/models/entities/receipt.entity';
 import {
   Column,
   Entity,

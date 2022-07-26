@@ -1,5 +1,5 @@
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
-import { ReceiptItemEntity } from 'src/receipt/entities/receipt-to-items.entity';
+import { ReceiptItemEntity } from 'src/receipt/models/entities/receipt-to-items.entity';
 import {
   Column,
   Entity,

@@ -13,11 +13,11 @@ import { User } from 'src/auth/models/dto/user.dto';
 import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
 import { ItemEntity } from 'src/items/models/entities/item.entity';
 import { Repository } from 'typeorm';
-import { ReceiptItem } from '../dto/receipt-to-items.dto';
-import { Receipt } from '../dto/receipt.dto';
-import { PaymentTypeEntity } from '../entities/payment-type.entity';
-import { ReceiptItemEntity } from '../entities/receipt-to-items.entity';
-import { ReceiptEntity } from '../entities/receipt.entity';
+import { ReceiptItem } from '../models/dto/receipt-to-items.dto';
+import { Receipt } from '../models/dto/receipt.dto';
+import { PaymentTypeEntity } from '../models/entities/payment-type.entity';
+import { ReceiptItemEntity } from '../models/entities/receipt-to-items.entity';
+import { ReceiptEntity } from '../models/entities/receipt.entity';
 
 @Injectable()
 export class ReceiptService {

@@ -1,4 +1,4 @@
-import { ReceiptEntity } from './../entities/receipt.entity';
+import { ReceiptEntity } from '../models/entities/receipt.entity';
 import {
   Controller,
   Get,
@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { ReceiptItem } from '../dto/receipt-to-items.dto';
-import { Receipt } from '../dto/receipt.dto';
+import { ReceiptItem } from '../models/dto/receipt-to-items.dto';
+import { Receipt } from '../models/dto/receipt.dto';
 import { ReceiptService } from '../services/receipt.service';
 
 @Controller('receipt')

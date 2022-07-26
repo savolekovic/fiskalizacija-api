@@ -41,6 +41,9 @@ export class ReceiptEntity {
   @Column({ default: false })
   isReceiptClosed: boolean;
 
+  @Column({ default: false })
+  dateOfClosure: Date;
+
   @OneToMany(() => ReceiptItemEntity, (receiptItems) => receiptItems.receipt)
   receiptItems!: ReceiptItemEntity[];
 }
