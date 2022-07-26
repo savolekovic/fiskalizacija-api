@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -17,56 +18,73 @@ export class Company {
   //UserEntity attributes
   user: UserEntity;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   username: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   password: string;
 
+  @ApiProperty()
   @IsNotEmptyObject()
   companyType: CompanyTypeEntity;
+
+  @ApiProperty()
   @IsNotEmptyObject()
   country: CountryEntity;
+
+  @ApiProperty()
   @IsNotEmptyObject()
   city: CityEntity;
+
   @IsNotEmptyObject()
+  @ApiProperty()
   street: StreetEntity;
 
   //Company Entity attributes
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   firstName: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   lastName: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   phoneNumber: string;
 
+  @ApiProperty()
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   companyName: string;
 
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   @Min(10000000)
   @Max(99999999)
   maticniBroj: number;
 
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   @Min(100000000)
   @Max(999999999)
   pib: number;
 
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   streetNumber: number;

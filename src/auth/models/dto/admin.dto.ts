@@ -8,11 +8,11 @@ export class Admin {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({required: true})
+  @ApiProperty()
   username: string;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({required: true})
+  @ApiProperty()
   password: string;
 }
