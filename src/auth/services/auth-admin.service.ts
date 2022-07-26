@@ -45,9 +45,9 @@ export class AdminService {
       switchMap((adminEntity: AdminEntity) => {
         return this.findAdminById(adminEntity.id);
       }),
-      map((admin: AdminEntity) => {
-        delete admin.user.id;
-        return admin;
+      map((savedAdmin: AdminEntity) => {
+        delete savedAdmin.user.id;
+        return savedAdmin;
       }),
     );
   }

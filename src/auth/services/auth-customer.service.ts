@@ -55,9 +55,9 @@ export class CustomerService {
       switchMap((customerEntity: CustomerEntity) => {
         return this.findCustomerById(customerEntity.id);
       }),
-      map((customer: CustomerEntity) => {
-        delete customer.user.id;
-        return customer;
+      map((savedCustomer: CustomerEntity) => {
+        delete savedCustomer.user.id;
+        return savedCustomer;
       }),
     );
   }

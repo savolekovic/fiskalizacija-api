@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { ItemEntity } from 'src/items/models/entities/item.entity';
 import {
   Column,
@@ -16,54 +17,74 @@ import { UserEntity } from './user.entity';
 
 @Entity('company')
 export class CompanyEntity {
+  @ApiProperty()
   @PrimaryColumn()
   id: number;
 
-  @OneToOne(() => UserEntity, { cascade: true })
+  @ApiProperty()
+  @OneToOne(() => UserEntity, { cascade: true, eager: true })
   @JoinColumn({ name: 'id', referencedColumnName: 'id' })
   user: UserEntity;
 
   @OneToMany(() => ItemEntity, (itemEntity) => itemEntity.company)
-    items: ItemEntity[];
+  items: ItemEntity[];
 
+  @ApiProperty()
   @ManyToOne(
     () => CompanyTypeEntity,
     (companyTypeEntity) => companyTypeEntity.users,
+    { eager: true },
   )
   companyType: CompanyTypeEntity;
 
-  @ManyToOne(() => CountryEntity, (countryEntity) => countryEntity.users)
+  @ApiProperty()
+  @ManyToOne(() => CountryEntity, (countryEntity) => countryEntity.users, {
+    eager: true,
+  })
   country: CountryEntity;
 
-  @ManyToOne(() => CityEntity, (cityEntity) => cityEntity.users)
+  @ApiProperty()
+  @ManyToOne(() => CityEntity, (cityEntity) => cityEntity.users, {
+    eager: true,
+  })
   city: CityEntity;
 
+  @ApiProperty()
   @ManyToOne(() => StreetEntity, (streetEntity) => streetEntity.users, {
     cascade: true,
+    eager: true,
   })
   street: StreetEntity;
 
+  @ApiProperty()
   @Column()
   firstName: string;
 
+  @ApiProperty()
   @Column()
   lastName: string;
 
+  @ApiProperty()
   @Column()
   phoneNumber: string;
 
+  @ApiProperty()
   @Column({ unique: true })
   email: string;
 
+  @ApiProperty()
   @Column()
   companyName: string;
 
+  @ApiProperty()
   @Column()
   maticniBroj: number;
 
+  @ApiProperty()
   @Column()
   pib: number;
 
+  @ApiProperty()
   @Column()
   streetNumber: number;
 
