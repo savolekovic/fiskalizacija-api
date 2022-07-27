@@ -19,6 +19,7 @@ async function bootstrap() {
     .setTitle('Fiskalizacija REST API')
     .setDescription('http://localhost:3000')
     .setVersion('1.0.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
