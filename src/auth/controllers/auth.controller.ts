@@ -23,6 +23,7 @@ import { CustomerService } from '../services/auth-customer.service';
 import { IsAdminGuard } from '../guards/is-admin.guard';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -91,6 +92,7 @@ export class AuthController {
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
+  
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
@@ -101,6 +103,7 @@ export class AuthController {
     return this.companyService.enableDisable(companyId, false);
   }
 
+  @ApiBearerAuth()
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
