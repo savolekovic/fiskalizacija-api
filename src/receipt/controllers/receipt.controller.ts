@@ -25,20 +25,20 @@ export class ReceiptController {
   @ApiCreatedResponse({ type: ReceiptEntity })
   @UseGuards(JwtGuard)
   @Post()
-  createReceipt(@Headers('Authorization') auth: string) {
-    return this.receiptService.createReceipt(auth);
+  createReceipt(@Headers() headers) {
+    return this.receiptService.createReceipt(headers.authorization);
   }
 
   @UseGuards(JwtGuard)
   @Put()
-  update(@Body() receipt: Receipt, @Headers('Authorization') auth: string) {
-    return this.receiptService.closeReceipt(receipt, auth);
+  update(@Body() receipt: Receipt, @Headers() headers) {
+    return this.receiptService.closeReceipt(receipt, headers.authorization);
   }
 
   @UseGuards(JwtGuard)
   @Get()
-  find(@Headers('Authorization') auth: string) {
-    return this.receiptService.findOpenReceipt(auth);
+  find(@Headers() headers) {
+    return this.receiptService.findOpenReceipt(headers.authorization);
   }
 
   @UseGuards(JwtGuard)
@@ -51,14 +51,14 @@ export class ReceiptController {
   @Post('item')
   addItem(
     @Body() receiptItem: ReceiptItem,
-    @Headers('Authorization') auth: string,
+    @Headers() headers,
   ) {
-    return this.receiptService.addReceiptItem(receiptItem, auth);
+    return this.receiptService.addReceiptItem(receiptItem, headers.authorization);
   }
 
   @UseGuards(JwtGuard)
   @Delete('item/:id')
-  deleteItem(@Param('id') id: number, @Headers('Authorization') auth: string) {
-    return this.receiptService.deleteReceiptItem(id, auth);
+  deleteItem(@Param('id') id: number, @Headers() headers) {
+    return this.receiptService.deleteReceiptItem(id, headers.authorization);
   }
 }

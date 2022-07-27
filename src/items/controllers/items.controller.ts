@@ -10,7 +10,7 @@ import {
   UseGuards,
   Headers,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { DeleteResult } from 'typeorm';
@@ -24,13 +24,11 @@ import { ItemsService } from '../services/items.service';
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
+  @ApiBody({ type: Item })
   @UseGuards(JwtGuard)
   @Post()
-  create(
-    @Body() item: Item,
-    @Headers('Authorization') auth: string,
-  ): Observable<ItemEntity> {
-    return from(this.itemsService.create(item, auth));
+  create(@Body() item: Item, @Headers() headers): Observable<ItemEntity> {
+    return from(this.itemsService.create(item, headers.authorization));
   }
 
   @UseGuards(JwtGuard)
@@ -48,17 +46,17 @@ export class ItemsController {
   update(
     @Param('id') id: number,
     @Body() item: Item,
-    @Headers('Authorization') auth: string,
+    @Headers() headers,
   ) {
-    return this.itemsService.update(id, item, auth);
+    return this.itemsService.update(id, item, headers.authorization);
   }
 
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Delete(':id')
   remove(
     @Param('id') id: number,
-    @Headers('Authorization') auth: string,
+    @Headers() headers,
   ): Observable<DeleteResult> {
-    return this.itemsService.remove(id, auth);
+    return this.itemsService.remove(id, headers.authorization);
   }
 }
