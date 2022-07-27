@@ -26,8 +26,8 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
-  ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 @Controller()
@@ -91,6 +91,7 @@ export class AuthController {
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
+  @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
   @ApiCreatedResponse({ type: UpdateReturnObject })
@@ -100,6 +101,7 @@ export class AuthController {
     return this.companyService.enableDisable(companyId, false);
   }
 
+  @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
   @ApiCreatedResponse({ type: UpdateReturnObject })
