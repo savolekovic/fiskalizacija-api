@@ -46,6 +46,8 @@ export class AdminService {
         return this.findAdminById(adminEntity.id);
       }),
       map((savedAdmin: AdminEntity) => {
+        if (!savedAdmin)
+          throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
         delete savedAdmin.user.id;
         delete savedAdmin.user.password;
         return savedAdmin;
@@ -80,7 +82,7 @@ export class AdminService {
             HttpStatus.NOT_FOUND,
           );
         }
-        
+
         return from(bcrypt.compare(password, admin.user.password)).pipe(
           map((isValidPassword: boolean) => {
             if (isValidPassword) return admin;
