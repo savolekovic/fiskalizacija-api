@@ -92,7 +92,7 @@ export class AuthController {
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
-  
+  @ApiBearerAuth()
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
