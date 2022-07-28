@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateReturnObject {
+export class UpdateDeleteReturnObject {
   @ApiProperty()
   affected: number;
 }
