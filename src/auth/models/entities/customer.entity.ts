@@ -37,6 +37,4 @@ export class CustomerEntity {
   @Column()
   phoneNumber: string;
 
-  @OneToMany(() => ReceiptEntity, (receiptEntity) => receiptEntity.customer)
-  receipts: ReceiptEntity[];
 }

@@ -1,16 +1,15 @@
+import { CompanyEntity } from 'src/auth/models/entities/company.entity';
 import {
   BadRequestException,
   ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, map, Observable, switchMap } from 'rxjs';
+import { from, map, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
-import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
 import { ItemEntity } from 'src/items/models/entities/item.entity';
 import { Repository } from 'typeorm';
 import { ReceiptItem } from '../models/dto/receipt-to-items.dto';
@@ -22,8 +21,8 @@ import { ReceiptEntity } from '../models/entities/receipt.entity';
 @Injectable()
 export class ReceiptService {
   constructor(
-    @InjectRepository(CustomerEntity)
-    private readonly customerRepository: Repository<CustomerEntity>,
+    @InjectRepository(CompanyEntity)
+    private readonly companyRepository: Repository<CompanyEntity>,
     @InjectRepository(ReceiptEntity)
     private readonly receiptRepository: Repository<ReceiptEntity>,
     @InjectRepository(PaymentTypeEntity)
@@ -43,19 +42,19 @@ export class ReceiptService {
     );
   }
 
-  findCustomerWithId(userId: number) {
+  findCompanyWithId(userId: number) {
     return from(
-      this.customerRepository.findOne({
+      this.companyRepository.findOne({
         where: { id: userId },
       }),
     );
   }
 
-  doesCustomerHaveOpenReceipt(customer: CustomerEntity) {
+  doesCompanyHaveOpenReceipt(company: CompanyEntity) {
     return from(
       this.receiptRepository.findOne({
         where: {
-          customer: customer,
+          company: company,
           isReceiptClosed: false,
         },
       }),
@@ -75,13 +74,13 @@ export class ReceiptService {
     const userId = this.getJwtUserId(jwt);
     let newReceipt = new ReceiptEntity();
 
-    return this.findCustomerWithId(userId).pipe(
-      switchMap((customer: CustomerEntity) => {
-        if (!customer) {
+    return this.findCompanyWithId(userId).pipe(
+      switchMap((company: CompanyEntity) => {
+        if (!company) {
           throw new ForbiddenException();
         }
-        newReceipt.customer = customer;
-        return this.doesCustomerHaveOpenReceipt(customer);
+        newReceipt.company = company;
+        return this.doesCompanyHaveOpenReceipt(company);
       }),
       switchMap((receipt: ReceiptEntity) => {
         if (receipt) {
@@ -95,12 +94,12 @@ export class ReceiptService {
   findOpenReceipt(jwt: string) {
     const userId = this.getJwtUserId(jwt);
 
-    return this.findCustomerWithId(userId).pipe(
-      switchMap((customer: CustomerEntity) => {
-        if (!customer) {
+    return this.findCompanyWithId(userId).pipe(
+      switchMap((company: CompanyEntity) => {
+        if (!company) {
           throw new ForbiddenException();
         }
-        return this.doesCustomerHaveOpenReceipt(customer);
+        return this.doesCompanyHaveOpenReceipt(company);
       }),
       map((receipt: ReceiptEntity) => {
         if (!receipt) {
@@ -176,9 +175,9 @@ export class ReceiptService {
   deleteReceiptItem(id: number, jwt: string) {
     const userId = this.getJwtUserId(jwt);
 
-    return this.findCustomerWithId(userId).pipe(
-      switchMap((customer: CustomerEntity) => {
-        if (!customer) {
+    return this.findCompanyWithId(userId).pipe(
+      switchMap((company: CompanyEntity) => {
+        if (!company) {
           throw new ForbiddenException();
         }
 

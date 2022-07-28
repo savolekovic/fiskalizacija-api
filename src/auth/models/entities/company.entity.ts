@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ItemEntity } from 'src/items/models/entities/item.entity';
+import { ReceiptEntity } from 'src/receipt/models/entities/receipt.entity';
 import {
   Column,
   Entity,
@@ -25,9 +26,6 @@ export class CompanyEntity {
   @OneToOne(() => UserEntity, { cascade: true, eager: true })
   @JoinColumn({ name: 'id', referencedColumnName: 'id' })
   user: UserEntity;
-
-  @OneToMany(() => ItemEntity, (itemEntity) => itemEntity.company)
-  items: ItemEntity[];
 
   @ApiProperty()
   @ManyToOne(
@@ -90,4 +88,10 @@ export class CompanyEntity {
 
   @Column({ default: false })
   status: boolean;
+
+  @OneToMany(() => ItemEntity, (itemEntity) => itemEntity.company)
+  items: ItemEntity[];
+
+  @OneToMany(() => ReceiptEntity, (receiptEntity) => receiptEntity.company)
+  receipts: ReceiptEntity[];
 }

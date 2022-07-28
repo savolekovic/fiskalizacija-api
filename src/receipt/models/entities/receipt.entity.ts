@@ -1,5 +1,4 @@
-import { timestamp } from 'rxjs';
-import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
+import { CompanyEntity } from './../../../auth/models/entities/company.entity';
 import {
   Column,
   Entity,
@@ -22,12 +21,10 @@ export class ReceiptEntity {
   )
   paymentType: PaymentTypeEntity;
 
-  @ManyToOne(
-    () => CustomerEntity,
-    (customerEntity) => customerEntity.receipts,
-    { eager: true },
-  )
-  customer: CustomerEntity;
+  @ManyToOne(() => CompanyEntity, (companyEntity) => companyEntity.receipts, {
+    eager: true,
+  })
+  company: CompanyEntity;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   totalAmount: number;

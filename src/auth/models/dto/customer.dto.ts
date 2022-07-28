@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumberString, IsString, Length } from 'class-validator';
-import { inspect } from 'util';
 import { UserEntity } from '../entities/user.entity';
 
 export class Customer {

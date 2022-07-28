@@ -6,8 +6,8 @@ import { PaymentTypeEntity } from './models/entities/payment-type.entity';
 import { ReceiptService } from './services/receipt.service';
 import { ReceiptItemEntity } from './models/entities/receipt-to-items.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { CustomerEntity } from 'src/auth/models/entities/customer.entity';
 import { ItemEntity } from 'src/items/models/entities/item.entity';
+import { CompanyEntity } from 'src/auth/models/entities/company.entity';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { ItemEntity } from 'src/items/models/entities/item.entity';
       ReceiptEntity,
       PaymentTypeEntity,
       ReceiptItemEntity,
-      CustomerEntity,
+      CompanyEntity,
       ItemEntity,
     ]),
   ],
