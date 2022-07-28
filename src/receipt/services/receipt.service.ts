@@ -11,7 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
 import { ItemEntity } from 'src/items/models/entities/item.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { ReceiptItem } from '../models/dto/receipt-to-items.dto';
 import { Receipt } from '../models/dto/receipt.dto';
 import { PaymentTypeEntity } from '../models/entities/payment-type.entity';
@@ -88,6 +88,13 @@ export class ReceiptService {
         }
         return from(this.receiptRepository.save(newReceipt));
       }),
+      switchMap((savedReceipt: ReceiptEntity) => {
+        return from(
+          this.receiptRepository.findOneOrFail({
+            where: { id: savedReceipt.id },
+          }),
+        );
+      }),
     );
   }
 
@@ -113,9 +120,6 @@ export class ReceiptService {
   closeReceipt(receipt: Receipt, jwt: string) {
     return this.findOpenReceipt(jwt).pipe(
       switchMap((receiptEntity: ReceiptEntity) => {
-        if (!receiptEntity) {
-          throw new HttpException('Receipt not found.', HttpStatus.NOT_FOUND);
-        }
         receipt.id = receiptEntity.id;
         return this.findPaymentType(receipt.paymentType.title);
       }),
@@ -129,6 +133,9 @@ export class ReceiptService {
         receipt.isReceiptClosed = true;
         return from(this.receiptRepository.update(receipt.id, receipt));
       }),
+      map((updateResult: UpdateResult) => {
+        return { affected: updateResult.affected };
+      }),
     );
   }
 
@@ -140,12 +147,12 @@ export class ReceiptService {
     );
   }
 
-  addReceiptItem(receiptItem: ReceiptItem, jwt: string) {
+  upsertReceiptItem(receiptItem: ReceiptItem, auth: string) {
     let newReceiptItem = new ReceiptItemEntity();
     newReceiptItem.quantity = receiptItem.quantity;
 
     return from(
-      this.createReceipt(jwt).pipe(
+      this.createReceipt(auth).pipe(
         switchMap((receiptEntity: ReceiptEntity) => {
           if (!receiptEntity) throw new BadRequestException();
           newReceiptItem.receipt = receiptEntity;
@@ -161,11 +168,12 @@ export class ReceiptService {
           if (!receiptItemEntity)
             return this.receiptItemEntityRepository.save(newReceiptItem);
           else {
-            newReceiptItem.quantity += receiptItemEntity.quantity;
-            return this.receiptItemEntityRepository.update(
-              receiptItemEntity.id,
-              newReceiptItem,
-            );
+            receiptItemEntity.quantity += newReceiptItem.quantity;
+            return this.receiptItemEntityRepository
+              .update(receiptItemEntity.id, receiptItemEntity)
+              .then((_) => {
+                return receiptItemEntity;
+              });
           }
         }),
       ),
@@ -182,6 +190,9 @@ export class ReceiptService {
         }
 
         return this.receiptItemEntityRepository.delete(id);
+      }),
+      map((deleteResult: DeleteResult) => {
+        return { affected: deleteResult.affected };
       }),
     );
   }
