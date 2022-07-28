@@ -27,6 +27,7 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -41,6 +42,7 @@ export class AuthController {
   ) {}
 
   //ADMIN
+  @ApiOperation({summary: 'Register an admin.'})
   @ApiBadRequestResponse()
   @ApiCreatedResponse({ type: AdminEntity })
   @Post('register/admin')
@@ -48,6 +50,7 @@ export class AuthController {
     return this.adminService.registerAdmin(admin);
   }
 
+  @ApiOperation({summary: 'Admin login.'})
   @ApiNotFoundResponse({ description: 'Invalid Credentials' })
   @ApiCreatedResponse({ type: LoginReturnObject })
   @Post('login/admin')
@@ -58,6 +61,7 @@ export class AuthController {
   }
 
   //CUSTOMER
+  @ApiOperation({summary: 'Register a customer.'})
   @ApiBadRequestResponse()
   @ApiCreatedResponse({ type: CustomerEntity })
   @Post('register/customer')
@@ -65,6 +69,7 @@ export class AuthController {
     return this.customerService.register(customer);
   }
 
+  @ApiOperation({summary: 'Customer login.'})
   @ApiNotFoundResponse({ description: 'Invalid Credentials' })
   @ApiCreatedResponse({ type: LoginReturnObject })
   @Post('login/customer')
@@ -75,6 +80,7 @@ export class AuthController {
   }
 
   //COMPANY
+  @ApiOperation({summary: 'Register a company.'})
   @ApiNotFoundResponse()
   @ApiBadRequestResponse()
   @ApiCreatedResponse({ type: CompanyEntity })
@@ -83,6 +89,7 @@ export class AuthController {
     return this.companyService.register(company);
   }
 
+  @ApiOperation({summary: 'Company login.'})
   @ApiNotFoundResponse({ description: 'Invalid Credentials' })
   @ApiCreatedResponse({ type: LoginReturnObject })
   @Post('login/company')
@@ -92,6 +99,7 @@ export class AuthController {
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
+  @ApiOperation({summary: 'Disable company.'})
   @ApiBearerAuth()
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
@@ -103,6 +111,7 @@ export class AuthController {
     return this.companyService.enableDisable(companyId, false);
   }
 
+  @ApiOperation({summary: 'Enable company.'})
   @ApiBearerAuth()
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
