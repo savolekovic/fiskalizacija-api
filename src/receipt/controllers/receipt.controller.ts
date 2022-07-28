@@ -22,12 +22,12 @@ export class ReceiptController {
   constructor(private readonly receiptService: ReceiptService) {}
 
   //We dont need this ENDPOINT since the Receipt is created when the Customer adds an item to the cart.
-  @ApiCreatedResponse({ type: ReceiptEntity })
-  @UseGuards(JwtGuard)
-  @Post()
-  createReceipt(@Headers() headers) {
-    return this.receiptService.createReceipt(headers.authorization);
-  }
+  // @ApiCreatedResponse({ type: ReceiptEntity })
+  // @UseGuards(JwtGuard)
+  // @Post()
+  // createReceipt(@Headers() headers) {
+  //   return this.receiptService.createReceipt(headers.authorization);
+  // }
 
   @UseGuards(JwtGuard)
   @Put()
