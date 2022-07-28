@@ -10,7 +10,7 @@ import {
   UseGuards,
   Headers,
 } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { DeleteResult } from 'typeorm';
@@ -24,6 +24,12 @@ import { ItemsService } from '../services/items.service';
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
+  @ApiOperation({summary: 'Create new item.'})
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
+  @ApiCreatedResponse({type: ItemEntity})
   @ApiBody({ type: Item })
   @UseGuards(JwtGuard)
   @Post()
@@ -31,22 +37,31 @@ export class ItemsController {
     return from(this.itemsService.create(item, headers.authorization));
   }
 
+  @ApiOperation({summary: 'Retrieve all company items.'})
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse()
   @UseGuards(JwtGuard)
-  @Get()
-  find(
-    @Query('take') take: number = 1,
-    @Query('skip') skip: number = 0,
-  ): Observable<ItemEntity[]> {
-    take = take > 20 ? 20 : take;
-    return this.itemsService.findItems(take, skip);
+  @Get(':companyId')
+  find(@Param('companyId')companyId: number): Observable<ItemEntity[]> {
+    return this.itemsService.findItems(companyId);
   }
 
+  @ApiOperation({summary: 'Update item.'})
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Put(':id')
   update(@Param('id') id: number, @Body() item: Item, @Headers() headers) {
     return this.itemsService.update(id, item, headers.authorization);
   }
 
+  @ApiOperation({summary: 'Delete item.'})
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse()
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Delete(':id')
   remove(

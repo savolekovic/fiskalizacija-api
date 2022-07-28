@@ -1,11 +1,12 @@
 import {
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable, skip, switchMap } from 'rxjs';
+import { from, map, Observable, skip, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
 import { DeleteResult, Repository } from 'typeorm';
@@ -70,7 +71,8 @@ export class ItemsService {
     return this.findCompany(companyId).pipe(
       switchMap((company: CompanyEntity) => {
         if (!company) {
-          throw new HttpException('Company not found.', HttpStatus.NOT_FOUND);
+          //Only a Company can create new Items
+          throw new ForbiddenException();
         }
         item.company = company;
         return this.findManufacturer(item.manufacturer.title);
@@ -99,19 +101,25 @@ export class ItemsService {
         item.warehouse = warehouse;
         return from(this.itemRepository.save(item));
       }),
+      switchMap((savedItem: ItemEntity) => {
+        return from(this.itemRepository.findOne({
+          where: {id: savedItem.id}
+        }));
+      }),
+      map((item: ItemEntity) => {
+        delete item.companyId;
+        delete item.company.user.id;
+        delete item.company.user.password;
+        return item
+      })
     );
   }
 
-  findItems(take: number, skip: number): Observable<ItemEntity[]> {
+  findItems(companyId: number): Observable<ItemEntity[]> {
     return from(
-      //We can use like this if we put {eager: true} on the relation
-      this.itemRepository.find({ take, skip }),
-      // .createQueryBuilder('item')
-      // .innerJoinAndSelect('item.company', 'company')
-      // .orderBy('item.id', 'DESC')
-      // .take(take)
-      // .skip(skip)
-      // .getMany(),
+      this.itemRepository.find({
+        where: {companyId}
+      }),
     );
   }
 
