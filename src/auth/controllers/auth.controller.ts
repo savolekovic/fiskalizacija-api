@@ -1,4 +1,4 @@
-import { UpdateReturnObject } from './../models/update-return.object';
+import { UpdateDeleteReturnObject } from './../models/update-return.object';
 import { LoginReturnObject } from '../models/login-return.object';
 import { JwtGuard } from './../guards/jwt.guard';
 import {
@@ -104,7 +104,7 @@ export class AuthController {
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
-  @ApiCreatedResponse({ type: UpdateReturnObject })
+  @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsAdminGuard)
   @Patch('disable/:id')
   disableCompany(@Param('id') companyId: number) {
@@ -116,7 +116,7 @@ export class AuthController {
   @ApiUnauthorizedResponse()
   @ApiNotFoundResponse()
   @ApiForbiddenResponse()
-  @ApiCreatedResponse({ type: UpdateReturnObject })
+  @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsAdminGuard)
   @Patch('enable/:id')
   enableCompany(@Param('id') companyId: number) {
