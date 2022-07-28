@@ -46,8 +46,6 @@ export class AdminService {
         return this.findAdminById(adminEntity.id);
       }),
       map((savedAdmin: AdminEntity) => {
-        if (!savedAdmin)
-          throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
         delete savedAdmin.user.id;
         delete savedAdmin.user.password;
         return savedAdmin;
@@ -96,10 +94,6 @@ export class AdminService {
     return from(
       this.adminRepository.findOne({
         where: { id },
-      }),
-    ).pipe(
-      map((admin: AdminEntity) => {
-        return admin;
       }),
     );
   }

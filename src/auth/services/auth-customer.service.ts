@@ -113,13 +113,6 @@ export class CustomerService {
       this.customerRepository.findOne({
         where: { id },
       }),
-    ).pipe(
-      map((customer: CustomerEntity) => {
-        if (!customer) {
-          throw new HttpException('Customer not found', HttpStatus.NOT_FOUND);
-        }
-        return customer;
-      }),
     );
   }
 }

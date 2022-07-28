@@ -166,13 +166,6 @@ export class CompanyService {
       this.companyRepository.findOne({
         where: { id },
       }),
-    ).pipe(
-      map((company: CompanyEntity) => {
-        if (!company) {
-          throw new HttpException('Company not found', HttpStatus.NOT_FOUND);
-        }
-        return company;
-      }),
     );
   }
 
