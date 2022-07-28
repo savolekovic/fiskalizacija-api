@@ -42,16 +42,16 @@ export class AuthController {
   ) {}
 
   //ADMIN
-  @ApiOperation({summary: 'Register an admin.'})
-  @ApiBadRequestResponse()
+  @ApiOperation({ summary: 'Register an admin.' })
+  @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiCreatedResponse({ type: AdminEntity })
   @Post('register/admin')
   registerAdmin(@Body() admin: Admin): Observable<AdminEntity> {
     return this.adminService.registerAdmin(admin);
   }
 
-  @ApiOperation({summary: 'Admin login.'})
-  @ApiNotFoundResponse({ description: 'Invalid Credentials' })
+  @ApiOperation({ summary: 'Admin login.' })
+  @ApiNotFoundResponse({ description: 'Invalid credentials' })
   @ApiCreatedResponse({ type: LoginReturnObject })
   @Post('login/admin')
   loginAdmin(@Body() user: User): Observable<{ token: string }> {
@@ -61,16 +61,16 @@ export class AuthController {
   }
 
   //CUSTOMER
-  @ApiOperation({summary: 'Register a customer.'})
-  @ApiBadRequestResponse()
+  @ApiOperation({ summary: 'Register a customer.' })
+  @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiCreatedResponse({ type: CustomerEntity })
   @Post('register/customer')
   registerCustomer(@Body() customer: Customer): Observable<CustomerEntity> {
     return this.customerService.register(customer);
   }
 
-  @ApiOperation({summary: 'Customer login.'})
-  @ApiNotFoundResponse({ description: 'Invalid Credentials' })
+  @ApiOperation({ summary: 'Customer login.' })
+  @ApiNotFoundResponse({ description: 'Invalid credentials' })
   @ApiCreatedResponse({ type: LoginReturnObject })
   @Post('login/customer')
   loginCustomer(@Body() user: User): Observable<{ token: string }> {
@@ -80,17 +80,17 @@ export class AuthController {
   }
 
   //COMPANY
-  @ApiOperation({summary: 'Register a company.'})
-  @ApiNotFoundResponse()
-  @ApiBadRequestResponse()
+  @ApiOperation({ summary: 'Register a company.' })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiCreatedResponse({ type: CompanyEntity })
   @Post('register/company')
   registerCompany(@Body() company: Company): Observable<CompanyEntity> {
     return this.companyService.register(company);
   }
 
-  @ApiOperation({summary: 'Company login.'})
-  @ApiNotFoundResponse({ description: 'Invalid Credentials' })
+  @ApiOperation({ summary: 'Company login.' })
+  @ApiNotFoundResponse({ description: 'Invalid credentials' })
   @ApiCreatedResponse({ type: LoginReturnObject })
   @Post('login/company')
   loginCompany(@Body() user: User): Observable<{ token: string }> {
@@ -99,11 +99,11 @@ export class AuthController {
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
-  @ApiOperation({summary: 'Disable company.'})
+  @ApiOperation({ summary: 'Disable company.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse()
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsAdminGuard)
   @Patch('disable/:id')
@@ -111,11 +111,11 @@ export class AuthController {
     return this.companyService.enableDisable(companyId, false);
   }
 
-  @ApiOperation({summary: 'Enable company.'})
+  @ApiOperation({ summary: 'Enable company.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse()
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsAdminGuard)
   @Patch('enable/:id')
