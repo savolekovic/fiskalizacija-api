@@ -50,7 +50,6 @@ export class ItemsController {
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({description: 'Unauthorized'})
   @ApiOkResponse({
-    description: 'The user records',
     type: ItemEntity,
     isArray: true
 })
