@@ -35,9 +35,9 @@ export class ItemsController {
 
   @ApiOperation({ summary: 'Create new item.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse({description: 'Unauthorized'})
-  @ApiNotFoundResponse({description: 'Not found.'})
-  @ApiForbiddenResponse({description: 'Forbidden.'})
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiCreatedResponse({ type: ItemEntity })
   @ApiBody({ type: Item })
   @UseGuards(JwtGuard)
@@ -48,11 +48,11 @@ export class ItemsController {
 
   @ApiOperation({ summary: 'Retrieve all company items.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse({description: 'Unauthorized'})
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiOkResponse({
     type: ItemEntity,
-    isArray: true
-})
+    isArray: true,
+  })
   @UseGuards(JwtGuard)
   @Get(':companyId')
   find(@Param('companyId') companyId: number): Observable<ItemEntity[]> {
@@ -61,9 +61,9 @@ export class ItemsController {
 
   @ApiOperation({ summary: 'Update item.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse({description: 'Unauthorized'})
-  @ApiNotFoundResponse({description: 'Not found.'})
-  @ApiForbiddenResponse({description: 'Forbidden.'})
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Put(':id')
@@ -73,9 +73,9 @@ export class ItemsController {
 
   @ApiOperation({ summary: 'Delete item.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse({description: 'Unauthorized'})
-  @ApiNotFoundResponse({description: 'Not found.'})
-  @ApiForbiddenResponse({description: 'Forbidden.'})
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Delete(':id')
