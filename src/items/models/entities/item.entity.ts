@@ -23,10 +23,7 @@ export class ItemEntity {
   @PrimaryColumn()
   companyId: number;
 
-  @ApiProperty({ type: () => CompanyEntity })
-  @ManyToOne(() => CompanyEntity, (companyEntity) => companyEntity.items, {
-    eager: true,
-  })
+  @ManyToOne(() => CompanyEntity, (companyEntity) => companyEntity.items)
   @JoinColumn({ name: 'companyId', referencedColumnName: 'id' })
   company: CompanyEntity;
 

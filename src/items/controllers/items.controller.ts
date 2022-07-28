@@ -5,15 +5,24 @@ import {
   Body,
   Param,
   Delete,
-  Query,
   Put,
   UseGuards,
   Headers,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { DeleteResult } from 'typeorm';
+import { UpdateDeleteReturnObject } from 'src/auth/models/update-return.object';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
 import { Item } from '../models/dto/item.dto';
 import { ItemEntity } from '../models/entities/item.entity';
@@ -24,12 +33,12 @@ import { ItemsService } from '../services/items.service';
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
-  @ApiOperation({summary: 'Create new item.'})
+  @ApiOperation({ summary: 'Create new item.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse()
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
-  @ApiCreatedResponse({type: ItemEntity})
+  @ApiUnauthorizedResponse({description: 'Unauthorized'})
+  @ApiNotFoundResponse({description: 'Not found.'})
+  @ApiForbiddenResponse({description: 'Forbidden.'})
+  @ApiCreatedResponse({ type: ItemEntity })
   @ApiBody({ type: Item })
   @UseGuards(JwtGuard)
   @Post()
@@ -37,37 +46,41 @@ export class ItemsController {
     return from(this.itemsService.create(item, headers.authorization));
   }
 
-  @ApiOperation({summary: 'Retrieve all company items.'})
+  @ApiOperation({ summary: 'Retrieve all company items.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse()
+  @ApiUnauthorizedResponse({description: 'Unauthorized'})
+  @ApiOkResponse({
+    description: 'The user records',
+    type: ItemEntity,
+    isArray: true
+})
   @UseGuards(JwtGuard)
   @Get(':companyId')
-  find(@Param('companyId')companyId: number): Observable<ItemEntity[]> {
+  find(@Param('companyId') companyId: number): Observable<ItemEntity[]> {
     return this.itemsService.findItems(companyId);
   }
 
-  @ApiOperation({summary: 'Update item.'})
+  @ApiOperation({ summary: 'Update item.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse()
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
+  @ApiUnauthorizedResponse({description: 'Unauthorized'})
+  @ApiNotFoundResponse({description: 'Not found.'})
+  @ApiForbiddenResponse({description: 'Forbidden.'})
+  @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Put(':id')
   update(@Param('id') id: number, @Body() item: Item, @Headers() headers) {
     return this.itemsService.update(id, item, headers.authorization);
   }
 
-  @ApiOperation({summary: 'Delete item.'})
+  @ApiOperation({ summary: 'Delete item.' })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse()
-  @ApiNotFoundResponse()
-  @ApiForbiddenResponse()
+  @ApiUnauthorizedResponse({description: 'Unauthorized'})
+  @ApiNotFoundResponse({description: 'Not found.'})
+  @ApiForbiddenResponse({description: 'Forbidden.'})
+  @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Delete(':id')
-  remove(
-    @Param('id') id: number,
-    @Headers() headers,
-  ): Observable<DeleteResult> {
+  remove(@Param('id') id: number, @Headers() headers) {
     return this.itemsService.remove(id, headers.authorization);
   }
 }

@@ -2,14 +2,15 @@ import {
   ForbiddenException,
   HttpException,
   HttpStatus,
-  Injectable
+  Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { userInfo } from 'os';
 import { from, map, Observable, skip, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
 import { CompanyEntity } from 'src/auth/models/entities/company.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Item } from '../models/dto/item.dto';
 import { ItemEntity } from '../models/entities/item.entity';
 import { ManufacturerEntity } from '../models/entities/manufacturer.entity';
@@ -102,23 +103,19 @@ export class ItemsService {
         return from(this.itemRepository.save(item));
       }),
       switchMap((savedItem: ItemEntity) => {
-        return from(this.itemRepository.findOne({
-          where: {id: savedItem.id}
-        }));
+        return from(
+          this.itemRepository.findOneOrFail({
+            where: { id: savedItem.id, companyId: savedItem.companyId },
+          }),
+        );
       }),
-      map((item: ItemEntity) => {
-        delete item.companyId;
-        delete item.company.user.id;
-        delete item.company.user.password;
-        return item
-      })
     );
   }
 
   findItems(companyId: number): Observable<ItemEntity[]> {
     return from(
       this.itemRepository.find({
-        where: {companyId}
+        where: { companyId },
       }),
     );
   }
@@ -160,12 +157,19 @@ export class ItemsService {
         item.warehouse = warehouse;
         return from(this.itemRepository.update(itemPK, item));
       }),
+      map((updateResult: UpdateResult) => {
+        return { affected: updateResult.affected };
+      }),
     );
   }
 
-  remove(id: number, jwt: string): Observable<DeleteResult> {
+  remove(id: number, jwt: string) {
     const itemPK = { id: id, companyId: this.getJwtUserId(jwt) };
-    return from(this.itemRepository.delete(itemPK));
+    return from(this.itemRepository.delete(itemPK)).pipe(
+      map((deleteResult: DeleteResult) => {
+        return { affected: deleteResult.affected };
+      }),
+    );
   }
 
   getJwtUserId(jwt: string) {
