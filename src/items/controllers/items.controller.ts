@@ -10,7 +10,7 @@ import {
   UseGuards,
   Headers,
 } from '@nestjs/common';
-import { ApiBody, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { from, Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { DeleteResult } from 'typeorm';
@@ -43,11 +43,7 @@ export class ItemsController {
 
   @UseGuards(JwtGuard, IsCreatorGuard)
   @Put(':id')
-  update(
-    @Param('id') id: number,
-    @Body() item: Item,
-    @Headers() headers,
-  ) {
+  update(@Param('id') id: number, @Body() item: Item, @Headers() headers) {
     return this.itemsService.update(id, item, headers.authorization);
   }
 
