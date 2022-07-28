@@ -27,6 +27,7 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -104,7 +105,7 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Not found.' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
+  @ApiOkResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsAdminGuard)
   @Patch('disable/:id')
   disableCompany(@Param('id') companyId: number) {
@@ -116,7 +117,7 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Not found.' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiCreatedResponse({ type: UpdateDeleteReturnObject })
+  @ApiOkResponse({ type: UpdateDeleteReturnObject })
   @UseGuards(JwtGuard, IsAdminGuard)
   @Patch('enable/:id')
   enableCompany(@Param('id') companyId: number) {
