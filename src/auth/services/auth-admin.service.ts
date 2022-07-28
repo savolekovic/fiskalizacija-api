@@ -97,9 +97,6 @@ export class AdminService {
       }),
     ).pipe(
       map((admin: AdminEntity) => {
-        if (!admin) {
-          throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
-        }
         return admin;
       }),
     );
