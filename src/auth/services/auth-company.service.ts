@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, Observable, of, switchMap, tap } from 'rxjs';
@@ -224,7 +229,8 @@ export class CompanyService {
     ).pipe(
       switchMap((company: CompanyEntity) => {
         if (!company)
-          throw new HttpException('Company not found.', HttpStatus.NOT_FOUND);
+          //Only admin is authorized to do this.
+          throw new ForbiddenException();
         return this.companyRepository.update(company.id, { status: newStatus });
       }),
       map((updateResult: UpdateResult) => {
