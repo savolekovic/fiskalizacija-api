@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, map, Observable, of, switchMap, tap } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { Repository, UpdateResult } from 'typeorm';
 import { Company } from '../models/dto/company.dto';
 import { User } from '../models/dto/user.dto';
@@ -42,25 +42,21 @@ export class CompanyService {
       company;
 
     return this.userService.doesUsernameExist(username).pipe(
-      tap((doesUsernameExist: boolean) => {
+      switchMap((doesUsernameExist: boolean) => {
         if (doesUsernameExist)
           throw new HttpException(
             'A user has already been created with this username',
             HttpStatus.BAD_REQUEST,
           );
+          return this.doesEmailExist(email);
       }),
-      switchMap(() => {
-        return this.doesEmailExist(email);
-      }),
-      tap((doesEmailExist: boolean) => {
+      switchMap((doesEmailExist: boolean) => {
         if (doesEmailExist)
           throw new HttpException(
             'A user has already been created with this email',
             HttpStatus.BAD_REQUEST,
           );
-      }),
-      switchMap(() => {
-        return this.userService.hashPassword(password);
+          return this.userService.hashPassword(password);
       }),
       switchMap((hashedPassword: string) => {
         const user = new UserEntity();

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, map, Observable, switchMap, tap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Admin } from '../models/dto/admin.dto';
 import { User } from '../models/dto/user.dto';
@@ -24,14 +24,12 @@ export class AdminService {
     const { username, password } = admin;
 
     return this.userService.doesUsernameExist(username).pipe(
-      tap((doesUsernameExist: boolean) => {
+      switchMap((doesUsernameExist: boolean) => {
         if (doesUsernameExist)
           throw new HttpException(
             'A user has already been created with this username',
             HttpStatus.BAD_REQUEST,
           );
-      }),
-      switchMap(() => {
         return this.userService.hashPassword(password);
       }),
       switchMap((hashedPassword: string) => {
