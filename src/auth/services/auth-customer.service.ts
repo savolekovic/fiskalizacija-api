@@ -57,6 +57,7 @@ export class CustomerService {
       }),
       map((savedCustomer: CustomerEntity) => {
         delete savedCustomer.user.id;
+        delete savedCustomer.user.password;
         return savedCustomer;
       }),
     );

@@ -47,6 +47,7 @@ export class AdminService {
       }),
       map((savedAdmin: AdminEntity) => {
         delete savedAdmin.user.id;
+        delete savedAdmin.user.password;
         return savedAdmin;
       }),
     );

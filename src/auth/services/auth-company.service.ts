@@ -110,6 +110,7 @@ export class CompanyService {
           }),
           map((savedCompany: CompanyEntity) => {
             delete savedCompany.user.id;
+            delete savedCompany.user.password;
             return savedCompany;
           }),
         );
